@@ -384,6 +384,8 @@ namespace MoreGamemodes
             opt.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Viper, 0, 0);
             opt.SetFloat(FloatOptionNames.KillCooldown, 2f);
             opt.SetFloat(FloatOptionNames.ShapeshifterCooldown, 1f);
             opt.SetFloat(FloatOptionNames.ShapeshifterDuration, 0f);

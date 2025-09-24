@@ -41,9 +41,9 @@ namespace MoreGamemodes
                 AmongUsClient.Instance.KickPlayer(clientData.Id, true);
                 return false;
             }
-            OptionItem.SyncAllOptions();
             new LateTask(() => 
             {
+                OptionItem.SyncAllOptions();
                 if (clientData != null && clientData.Character != null)
                     clientData.Character.RpcSendMessage("Welcome to More Gamemodes lobby! This is mod that addes new gamemodes. Type '/h gm' to see current gamemode description and '/n' to see current options. You can also type '/cm' to see other commands. Have fun playing these new gamemodes! There also new roles in classic games, you can type '/r' to see all of them! This lobby uses More Gamemodes v" + Main.CurrentVersion + "! You can play without mod installed!\n\nDiscord:https://discord.gg/jJe5kPpbFJ\nGithub:https://github.com/Rabek009/MoreGamemodes", "Welcome");
             }, 2f, "Welcome Message");

@@ -44,6 +44,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -63,6 +65,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -82,6 +86,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -103,11 +109,6 @@ namespace MoreGamemodes
 
         public override bool OnCheckVanish()
         {
-            if (Utils.IsSabotage())
-            {
-                new LateTask(() => Player.RpcSetAbilityCooldown(0.001f), 0.2f);
-                return false;
-            }
             Player.RpcMakeInvisible();
             Player.SyncPlayerSettings();
             Player.RpcSetVentInteraction();
@@ -138,7 +139,7 @@ namespace MoreGamemodes
 
         public override string GetNamePostfix()
         {
-            if (AbilityDuration > 0f)
+            if (AbilityDuration > 0f && !Player.AmOwner && !Main.IsModded[Player.PlayerId])
                 return Utils.ColorString(Color, "\n<size=1.8>[INVISIBLE]</size>");
             return "";
         }
@@ -173,7 +174,7 @@ namespace MoreGamemodes
                 BaseRole = BaseRoles.DesyncPhantom;
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom && !pc.Data.IsDead)
+                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Crewmate, Player);
                 }
                 Player.RpcSetDesyncRole(RoleTypes.Phantom, Player);
@@ -215,7 +216,7 @@ namespace MoreGamemodes
             VanishDuration = FloatOptionItem.Create(1000404, "Vanish duration", new(1f, 15f, 1f), 3f, TabGroup.NeutralRoles, false)
                 .SetParent(Chance)
                 .SetValueFormat(OptionFormat.Seconds);
-            SpeedIncreaseWhileInvisible = IntegerOptionItem.Create(1000405, "Speed increase while invisible", new(10, 300, 10), 100, TabGroup.NeutralRoles, false)
+            SpeedIncreaseWhileInvisible = IntegerOptionItem.Create(1000405, "Speed increase while invisible", new(10, 300, 10), 50, TabGroup.NeutralRoles, false)
                 .SetParent(Chance)
                 .SetValueFormat(OptionFormat.Percent);
             CanUseVents = BooleanOptionItem.Create(1000406, "Can use vents", true, TabGroup.NeutralRoles, false)

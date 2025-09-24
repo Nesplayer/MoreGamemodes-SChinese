@@ -181,6 +181,8 @@ namespace MoreGamemodes
             opt.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Viper, 0, 0);
             opt.SetInt(Int32OptionNames.TaskBarMode, (int)TaskBarMode.Invisible);
             opt.SetFloat(FloatOptionNames.CrewLightMod, 100f);
             opt.SetFloat(FloatOptionNames.ImpostorLightMod, 100f);

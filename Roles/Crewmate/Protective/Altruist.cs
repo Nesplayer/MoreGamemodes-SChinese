@@ -75,6 +75,7 @@ namespace MoreGamemodes
 
         public override bool ShouldContinueGame()
         {
+            if (!ShouldContinueTheGame.GetBool()) return false;
             return Object.FindObjectOfType<DeadBody>() != null;
         }
 
@@ -111,6 +112,7 @@ namespace MoreGamemodes
         public static OptionItem Count;
         public static OptionItem SeeArrowToNearestBody;
         public static OptionItem KillerSeeArrowToRevived;
+        public static OptionItem ShouldContinueTheGame;
         public static void SetupOptionItem()
         {
             Chance = RoleOptionItem.Create(300300, CustomRoles.Altruist, TabGroup.CrewmateRoles, false);
@@ -119,6 +121,8 @@ namespace MoreGamemodes
             SeeArrowToNearestBody = BooleanOptionItem.Create(300302, "See arrow to nearest body", false, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             KillerSeeArrowToRevived = BooleanOptionItem.Create(300303, "Killer see arrow to revived", true, TabGroup.CrewmateRoles, false)
+                .SetParent(Chance);
+            ShouldContinueTheGame = BooleanOptionItem.Create(300304, "Should continue the game", true, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             Options.RolesChance[CustomRoles.Altruist] = Chance;
             Options.RolesCount[CustomRoles.Altruist] = Count;

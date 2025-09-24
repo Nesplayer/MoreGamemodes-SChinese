@@ -3,7 +3,7 @@
 ## About the mod
 
 More Gamemodes is the Among Us mod that addes new gamemodes and roles. Only host need to have mod for it to work.<br>
-Among Us version: 16.1.0<br>
+Among Us version: 17.0.0<br>
 Join to discord server: https://discord.gg/jJe5kPpbFJ
 
 ## Hotkeys
@@ -57,7 +57,7 @@ Join to discord server: https://discord.gg/jJe5kPpbFJ
 | /tpin                                           | Teleports you into lobby ship                           |
 | /tagcolor COLOR_HEX                             | Changes color of your tag (not host tag)                |
 | /myrole<br>/m                                   | Show your role description (Classic)                    |
-| /guess, /shoot, /bet<br>/bt, /gs PLAYER_ID ROLE | You guess player as evil/nice guesser (Classic)         |
+| /guess, /shoot, /bet<br>/bt, /gs PLAYER_ID ROLE | You guess player as guesser (Classic)                   |
 | /roles<br>/role, /r                             | Show role options (Classic)                             |
 | /roles, /role<br>/r ROLE                        | Show role description (Classic)                         |
 | /kcount<br>/kc                                  | Show amount of killers alive (Classic)                  |
@@ -559,6 +559,23 @@ You can chat during rounds. If proximity chat is on only nearby players see you 
 #### Disable zipline
 Players can't use zipline on the fungle.
 
+#### Guesser mode
+All players on teams specified in options can guess other people roles. To guess player type <b>/guess PLAYER_ID ROLE_NAME</b>. You see player id in his name. For example: if you want to guess that player with number 2 is sheriff, you should type <i>/guess 2 sheriff</i>. If you guess role correctly, that player dies instantly. But if you're wrong, you die instead. This additional gamemode works only in classic.
+
+##### Game options
+| Name                           |
+| ------------------------------ |
+| Impostors can guess            |
+| Neutral killing can guess      |
+| Neutral evil can guess         |
+| Neutral benign can guess       |
+| Crewmates can guess            |
+| Neutral killing can be guessed |
+| Neutral evil can be guessed    |
+| Neutral benign can be guessed  |
+| "Crewmate" role can be guessed |
+| Add ons can be guessed         |
+
 ## Roles
 
 ### Crewmate investigative
@@ -587,7 +604,7 @@ When you report dead body, you know target's role, killer's role and how old is 
 | Can be guessed            |
 
 #### Oracle
-You can use pet button to switch between task and confess mode. In task mode you can do tasks. In confess mode you have kill button. Use kill button to select x players (amount is defined in options). When you select these players, the most evil of them will confess (you will see that he confessed and his name will be red). Only you know who confessed. If 2 or more players are the most evil, then 1 random of them will confess. These are aligments from the most evil:<br>1. Impostor<br>2. Neutral killer<br>3. Neutral evil<br>4.Neutral benign<br>5. Crewmate killing<br>6. Crewmate non-killing<br><br>If you have mod installed, you don't have task and confess mode. You can do tasks and make people confess at the same time.
+You can use pet button to switch between task and confess mode. In task mode you can do tasks. In confess mode you have kill button. Use kill button to select x players (amount is defined in options). When you select these players, the most evil of them will confess (you will see that he confessed and his name will be orange). Only you know who confessed. If 2 or more players are the most evil, then 1 random of them will confess. These are aligments from the most evil:<br>1. Impostor<br>2. Neutral killer<br>3. Neutral evil<br>4.Neutral benign<br>5. Crewmate killing<br>6. Crewmate non-killing<br><br>If you have mod installed, you don't have task and confess mode. You can do tasks and make people confess at the same time.
 
 ##### Game options
 | Name                                      |
@@ -595,6 +612,7 @@ You can use pet button to switch between task and confess mode. In task mode you
 | Confess cooldown                          |
 | Number of selected players                |
 | Unselect dead players                     |
+| Minimum alive players for ability use     |
 | Initial ability use limit                 |
 | Ability use gain with each task completed |
 
@@ -631,15 +649,17 @@ You can guess evil roles during meeting. To guess player type <b>/guess PLAYER_I
 | Can guess neutral evil    |
 | Can guess neutral benign  |
 | Can guess add ons         |
+| Should continue the game  |
 
 #### Shaman
-During meeting you can curse someone. To do this open kick menu (open chat and click red button), select player who you want to curse and click "kick". If that player is killer he has to kill someone next round, or he will die and is informed about it. If that player can't kill, nothing will happen. You can curse max 1 person per meeting. You can't call meeting, but you can still report dead body. You have limited ability uses, but you can do tasks to increase it.<br><br>If you have mod installed you can use curse button to curse someone.
+During meeting you can curse someone. To do this click shift button during meeting and select player who you want to curse. If that player is killer he has to kill someone next round, or he will die and is informed about it. If that player can't kill, nothing will happen. You can curse max 1 person per meeting. You can't call meeting, but you can still report dead body. You have limited ability uses, but you can do tasks to increase it.<br><br>If you have mod installed you can use curse button to curse someone.
 
 ##### Game options
 | Name                                      |
 | ----------------------------------------- |
 | Initial ability use limit                 |
 | Ability use gain with each task completed |
+| Should continue the game                  |
 
 #### Sheriff
 You can use pet button to switch between task and kill mode. In task mode you can do tasks. In kill mode you have kill button. You can kill impostors and depending on options neutrals. If you try to kill someone you can't, you die from misfire. Depending on options your target dies on misfire too.<br><br>If you have mod installed, you don't have task and kill mode. You can do tasks and kill at the same time.
@@ -653,6 +673,7 @@ You can use pet button to switch between task and kill mode. In task mode you ca
 | Can kill neutral evil    |
 | Can kill neutral benign  |
 | Can kill jester          |
+| Should continue the game |
 
 ### Crewmate protective
 
@@ -664,6 +685,7 @@ You can use pet button to switch between report and revive mode. In report mode 
 | --------------------------- |
 | See arrow to nearest body   |
 | Killer see arrow to revived |
+| Should continue the game    |
 
 #### Immortal
 After completing all tasks you can survive few kill attempts. In addition after you complete task, you get temporarily protection. If impostor tries to kill you, his cooldown will reset to 50%.
@@ -697,22 +719,24 @@ If you get killed, dead bodies of you are going to spawn on killer for some time
 | Dead bodies interval       |
 
 #### Judge
-During meeting you can eject anyone you want one time. To do this open kick menu (open chat and click red button), select player who you want to exile and click "kick". After that meeting will instantly end and that player will be ejected. Depending on options you might die after using ability.<br><br>If you have mod installed you can use judge button to exile player.
+During meeting you can eject anyone you want one time. To do this click shift button during meeting and select player who you want to exile. After that meeting will instantly end and that player will be ejected. Depending on options you might die after using ability. You can't use your ability during discussion time, you can only do it during voting time.<br><br>If you have mod installed you can use judge button to exile player.
 
 ##### Game options
-| Name                    |
-| ----------------------- |
-| Die after using ability |
+| Name                     |
+| ------------------------ |
+| Die after using ability  |
+| Should continue the game |
 
 #### Mayor
 Your vote counts as multiple votes. Use it to eject impostors easier.
 
 ##### Game options
-| Name                  |
-| --------------------- |
-| Additional vote count |
-| Hide additional votes |
-| Can be guessed        |
+| Name                     |
+| ------------------------ |
+| Additional vote count    |
+| Hide additional votes    |
+| Can be guessed           |
+| Should continue the game |
 
 #### Mutant
 You can use pet button during sabotage to instantly fix it from anywhere. You can't fix mushroom mixup sabotage.
@@ -854,6 +878,7 @@ You can use pet button to switch between report and remember mode. In report mod
 | Name                      |
 | ------------------------- |
 | See arrow to nearest body |
+| Should continue the game  |
 
 #### Opportunist
 Survive to the end to win with winning team. If you die, you lose.
@@ -955,19 +980,38 @@ Your goal is to kill everyone. You have lower kill cooldown, so you can kill fas
 When you're killed, your killer instantly self report. Depending on options there might be report delay.
 
 ##### Game options
-| Name                          |
-| ----------------------------- |
-| Report delay                  |
-| Warn killer about self report |
-| Neutrals can become bait      |
-| Impostors can become bait     |
-| Can be guessed                |
+| Name                             |
+| -------------------------------- |
+| Report delay                     |
+| Warn killer about self report    |
+| Benign neutrals can become bait  |
+| Evil neutrals can become bait    |
+| Killing neutrals can become bait |
+| Impostors can become bait        |
+| Can be guessed                   |
 
 #### Radar
 You see arrow to nearest player. That arrow is always updated.
 
 #### Watcher
 You see who votes for who in meeting, like with anonymous votes turned off.
+
+#### Guesser
+You can guess roles during meeting. To guess player type <b>/guess PLAYER_ID ROLE_NAME</b>. You see player id in his name. For example: if you want to guess that player with number 10 is jester, you should type <i>/guess 10 jester</i>. If you guess role correctly, that player dies instantly. But if you're wrong, you die instead.
+
+##### Game options
+| Name                                |
+| ----------------------------------- |
+| Can guess neutral killing           |
+| Can guess neutral evil              |
+| Can guess neutral benign            |
+| Can guess "Crewmate" role           |
+| Can guess add ons                   |
+| Crewmates can become guesser        |
+| Benign neutrals can become guesser  |
+| Evil neutrals can become guesser    |
+| Killing neutrals can become guesser |
+| Impostors can become guesser        |
 
 ### Harmful
 

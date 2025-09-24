@@ -32,13 +32,13 @@ namespace MoreGamemodes
 
         public override void OnPet()
         {
-            if (Main.IsModded[Player.PlayerId]) return;
+            if (Player.AmOwner || Main.IsModded[Player.PlayerId]) return;
             if (BaseRole == BaseRoles.Crewmate)
             {
                 BaseRole = BaseRoles.DesyncImpostor;
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom && !pc.Data.IsDead)
+                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Crewmate, Player);
                 }
                 Player.RpcSetDesyncRole(RoleTypes.Impostor, Player);
@@ -58,6 +58,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -66,7 +68,7 @@ namespace MoreGamemodes
 
         public override bool OnCheckMurder(PlayerControl target)
         {
-            if (!Main.IsModded[Player.PlayerId] && Cooldown > 0f) return false;
+            if (!Player.AmOwner && !Main.IsModded[Player.PlayerId] && Cooldown > 0f) return false;
             if (Target != byte.MaxValue) return false;
             Target = target.PlayerId;
             SendRPC();
@@ -89,6 +91,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -133,6 +137,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -185,7 +191,7 @@ namespace MoreGamemodes
 
         public override string GetNamePostfix()
         {
-            if (Main.IsModded[Player.PlayerId]) return "\nTarget: " + (Target == byte.MaxValue ? "<b>None</b>" : Main.StandardNames[Target]);
+            if (Player.AmOwner || Main.IsModded[Player.PlayerId]) return "\nTarget: " + (Target == byte.MaxValue ? "<b>None</b>" : Main.StandardNames[Target]);
             if (BaseRole == BaseRoles.Crewmate)
             {
                 return Utils.ColorString(Color, "\n<size=1.8>Mode: Task\n</size><size=65%>") + Utils.ColorString(Color.magenta, "(") +

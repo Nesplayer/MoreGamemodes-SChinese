@@ -411,10 +411,14 @@ namespace MoreGamemodes
                 List<PlayerControl> PotentialPlayers = new();
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if ((pc.GetRole().IsCrewmate() && !AddOnsHelper.CrewmatesCanGet(addOn)) || (pc.GetRole().IsNeutral() && !AddOnsHelper.NeutralsCanGet(addOn)) || (pc.GetRole().IsImpostor() && !AddOnsHelper.ImpostorsCanGet(addOn)))
+                    if ((pc.GetRole().IsCrewmate() && !AddOnsHelper.CrewmatesCanGet(addOn)) || (pc.GetRole().IsNeutralBenign() && !AddOnsHelper.BenignNeutralsCanGet(addOn)) ||
+                        (pc.GetRole().IsNeutralEvil() && !AddOnsHelper.EvilNeutralsCanGet(addOn)) || (pc.GetRole().IsNeutralKilling() && !AddOnsHelper.KillingNeutralsCanGet(addOn)) ||
+                        (pc.GetRole().IsImpostor() && !AddOnsHelper.ImpostorsCanGet(addOn)))
+                    {
                         continue;
+                    }
                     if (pc.GetAddOns().Count >= Options.MaxAddOnsForPlayer.GetInt())
-                        continue;
+                            continue;
                     if (!pc.GetRole().IsCompatible(addOn))
                         continue;
                     bool compatible = true;
@@ -443,10 +447,14 @@ namespace MoreGamemodes
                 List<PlayerControl> PotentialPlayers = new();
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if ((pc.GetRole().IsCrewmate() && !AddOnsHelper.CrewmatesCanGet(addOn)) || (pc.GetRole().IsNeutral() && !AddOnsHelper.NeutralsCanGet(addOn)) || (pc.GetRole().IsImpostor() && !AddOnsHelper.ImpostorsCanGet(addOn)))
+                    if ((pc.GetRole().IsCrewmate() && !AddOnsHelper.CrewmatesCanGet(addOn)) || (pc.GetRole().IsNeutralBenign() && !AddOnsHelper.BenignNeutralsCanGet(addOn)) ||
+                        (pc.GetRole().IsNeutralEvil() && !AddOnsHelper.EvilNeutralsCanGet(addOn)) || (pc.GetRole().IsNeutralKilling() && !AddOnsHelper.KillingNeutralsCanGet(addOn)) ||
+                        (pc.GetRole().IsImpostor() && !AddOnsHelper.ImpostorsCanGet(addOn)))
+                    {
                         continue;
+                    }
                     if (pc.GetAddOns().Count >= Options.MaxAddOnsForPlayer.GetInt())
-                        continue;
+                            continue;
                     if (!pc.GetRole().IsCompatible(addOn))
                         continue;
                     bool compatible = true;
@@ -494,11 +502,15 @@ namespace MoreGamemodes
                         pc.RpcSetRole(RoleTypes.Tracker);
                         Main.StandardRoles[pc.PlayerId] = RoleTypes.Tracker;
                         break;
+                    case BaseRoles.Detective:
+                        pc.RpcSetRole(RoleTypes.Detective);
+                        Main.StandardRoles[pc.PlayerId] = RoleTypes.Detective;
+                        break;
                     case BaseRoles.Impostor:
                         List<byte> list = new();
                         foreach (var ar in PlayerControl.AllPlayerControls)
                         {
-                            if (ar.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom)
+                            if (ar.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
                                 list.Add(ar.PlayerId);
                         }
                         Utils.SetDesyncRoleForPlayers(pc, list, RoleTypes.Crewmate, RoleTypes.Impostor);
@@ -510,7 +522,7 @@ namespace MoreGamemodes
                         List<byte> list2 = new();
                         foreach (var ar in PlayerControl.AllPlayerControls)
                         {
-                            if (ar.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom)
+                            if (ar.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
                                 list2.Add(ar.PlayerId);
                         }
                         Utils.SetDesyncRoleForPlayers(pc, list2, RoleTypes.Crewmate, RoleTypes.Shapeshifter);
@@ -522,12 +534,24 @@ namespace MoreGamemodes
                         List<byte> list3 = new();
                         foreach (var ar in PlayerControl.AllPlayerControls)
                         {
-                            if (ar.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom)
+                            if (ar.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
                                 list3.Add(ar.PlayerId);
                         }
                         Utils.SetDesyncRoleForPlayers(pc, list3, RoleTypes.Crewmate, RoleTypes.Phantom);
                         Main.StandardRoles[pc.PlayerId] = RoleTypes.Phantom;
                         foreach (var ar in list3)
+                            Main.DesyncRoles[(pc.PlayerId, ar)] = RoleTypes.Crewmate;
+                        break;
+                    case BaseRoles.Viper:
+                        List<byte> list4 = new();
+                        foreach (var ar in PlayerControl.AllPlayerControls)
+                        {
+                            if (ar.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
+                                list4.Add(ar.PlayerId);
+                        }
+                        Utils.SetDesyncRoleForPlayers(pc, list4, RoleTypes.Crewmate, RoleTypes.Viper);
+                        Main.StandardRoles[pc.PlayerId] = RoleTypes.Viper;
+                        foreach (var ar in list4)
                             Main.DesyncRoles[(pc.PlayerId, ar)] = RoleTypes.Crewmate;
                         break;
                     case BaseRoles.DesyncImpostor:
@@ -544,6 +568,11 @@ namespace MoreGamemodes
                         Utils.SetDesyncRoleForPlayer(pc, RoleTypes.Phantom, RoleTypes.Crewmate);
                         Main.StandardRoles[pc.PlayerId] = RoleTypes.Crewmate;
                         Main.DesyncRoles[(pc.PlayerId, pc.PlayerId)] = RoleTypes.Phantom;
+                        break;
+                    case BaseRoles.DesyncViper:
+                        Utils.SetDesyncRoleForPlayer(pc, RoleTypes.Viper, RoleTypes.Crewmate);
+                        Main.StandardRoles[pc.PlayerId] = RoleTypes.Crewmate;
+                        Main.DesyncRoles[(pc.PlayerId, pc.PlayerId)] = RoleTypes.Viper;
                         break;
                 }
             }
@@ -692,6 +721,13 @@ namespace MoreGamemodes
             return !cancel;
         }
 
+        public override void OnCheckShapeshiftMeeting(PlayerControl shapeshifter, PlayerControl target)
+        {
+            shapeshifter.GetRole().OnCheckShapeshiftMeeting(target);
+            foreach (var addOn in shapeshifter.GetAddOns())
+                addOn.OnCheckShapeshiftMeeting(target);
+        }
+
         public override void OnShapeshift(PlayerControl shapeshifter, PlayerControl target)
         {
             shapeshifter.GetRole().OnShapeshift(target);
@@ -721,7 +757,12 @@ namespace MoreGamemodes
             }
             if (report)
             {
-                Camouflager.OnGlobalReportDeadBody(__instance, target);
+                foreach (var pc in PlayerControl.AllPlayerControls)
+                {
+                    pc.GetRole().OnMeeting();
+                    foreach (var addOn in pc.GetAddOns())
+                        addOn.OnMeeting();
+                }
                 Shaman.OnGlobalReportDeadBody(__instance, target);
                 Arsonist.OnGlobalReportDeadBody(__instance, target);
                 if (CustomRolesHelper.GetRoleChance(CustomRoles.Altruist) > 0)
@@ -749,9 +790,6 @@ namespace MoreGamemodes
                         IsBlinded[pc.PlayerId] = false;
                         if (IsRoleblocked[pc.PlayerId])
                             pc.RpcSetRoleblock(false);
-                        pc.GetRole().OnMeeting();
-                        foreach (var addOn in pc.GetAddOns())
-                            addOn.OnMeeting();
                         if (syncSettings)
                             pc.SyncPlayerSettings();
                         Utils.SetAllVentInteractions();
@@ -994,6 +1032,8 @@ namespace MoreGamemodes
 
         public override string BuildPlayerName(PlayerControl player, PlayerControl seer, string name)
         {
+            if (IsCamouflageActive && player != seer)
+                return Utils.ColorString(Color.clear, "Player");
             string prefix = "";
             string postfix = "";
             if (player == seer || seer.Data.Role.IsDead || (player.GetRole().IsImpostor() && seer.GetRole().IsImpostor() && Options.SeeTeammateRoles.GetBool()) || player.GetRole().IsRoleRevealed(seer) || seer.GetRole().SeePlayerRole(player))
@@ -1011,8 +1051,6 @@ namespace MoreGamemodes
                 foreach (var addOn in player.GetAddOns())
                     postfix += addOn.GetNamePostfix();
             }
-            if (IsCamouflageActive && player != seer)
-                name = Utils.ColorString(Color.clear, "Player");
             return prefix + name + postfix;
         }
 
@@ -1086,11 +1124,15 @@ namespace MoreGamemodes
                         player.RpcSetRoleV2(RoleTypes.Tracker);
                         Main.StandardRoles[player.PlayerId] = RoleTypes.Tracker;
                         break;
+                    case BaseRoles.Detective:
+                        player.RpcSetRoleV2(RoleTypes.Detective);
+                        Main.StandardRoles[player.PlayerId] = RoleTypes.Detective;
+                        break;
                     case BaseRoles.Impostor:
                         Main.StandardRoles[player.PlayerId] = RoleTypes.Impostor;
                         foreach (var pc in PlayerControl.AllPlayerControls)
                         {
-                            if (pc.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom)
+                            if (pc.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
                                 player.RpcSetDesyncRole(RoleTypes.Crewmate, pc);
                             else
                                 player.RpcSetDesyncRole(RoleTypes.Impostor, pc);
@@ -1100,7 +1142,7 @@ namespace MoreGamemodes
                         Main.StandardRoles[player.PlayerId] = RoleTypes.Shapeshifter;
                         foreach (var pc in PlayerControl.AllPlayerControls)
                         {
-                            if (pc.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom)
+                            if (pc.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
                                 player.RpcSetDesyncRole(RoleTypes.Crewmate, pc);
                             else
                                 player.RpcSetDesyncRole(RoleTypes.Shapeshifter, pc);
@@ -1110,10 +1152,20 @@ namespace MoreGamemodes
                         Main.StandardRoles[player.PlayerId] = RoleTypes.Phantom;
                         foreach (var pc in PlayerControl.AllPlayerControls)
                         {
-                            if (pc.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom)
+                            if (pc.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
                                 player.RpcSetDesyncRole(RoleTypes.Crewmate, pc);
                             else
                                 player.RpcSetDesyncRole(RoleTypes.Phantom, pc);
+                        }
+                        break;
+                    case BaseRoles.Viper:
+                        Main.StandardRoles[player.PlayerId] = RoleTypes.Viper;
+                        foreach (var pc in PlayerControl.AllPlayerControls)
+                        {
+                            if (pc.GetRole().BaseRole is BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper)
+                                player.RpcSetDesyncRole(RoleTypes.Crewmate, pc);
+                            else
+                                player.RpcSetDesyncRole(RoleTypes.Viper, pc);
                         }
                         break;
                     case BaseRoles.DesyncImpostor:
@@ -1142,6 +1194,16 @@ namespace MoreGamemodes
                         {
                             if (pc == player)
                                 player.RpcSetDesyncRole(RoleTypes.Phantom, pc);
+                            else
+                                player.RpcSetDesyncRole(RoleTypes.Crewmate, pc);
+                        }
+                        break;
+                    case BaseRoles.DesyncViper:
+                        Main.StandardRoles[player.PlayerId] = RoleTypes.Crewmate;
+                        foreach (var pc in PlayerControl.AllPlayerControls)
+                        {
+                            if (pc == player)
+                                player.RpcSetDesyncRole(RoleTypes.Viper, pc);
                             else
                                 player.RpcSetDesyncRole(RoleTypes.Crewmate, pc);
                         }
@@ -1152,11 +1214,12 @@ namespace MoreGamemodes
                     case BaseRoles.DesyncImpostor:
                     case BaseRoles.DesyncShapeshifter:
                     case BaseRoles.DesyncPhantom:
+                    case BaseRoles.DesyncViper:
                         foreach (var pc in PlayerControl.AllPlayerControls)
                         {
                             if (pc != player)
                             {
-                                if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom)
+                                if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper)
                                     pc.RpcSetDesyncRole(RoleTypes.Crewmate, player);
                                 else
                                     pc.RpcSetDesyncRole(Main.StandardRoles[pc.PlayerId], player);

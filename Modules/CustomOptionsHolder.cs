@@ -363,6 +363,18 @@ namespace MoreGamemodes
         public static OptionItem DisableDuringCommsSabotage;
         public static OptionItem DisableZipline;
         public static OptionItem EnableDisableZipline;
+        public static OptionItem GuesserMode;
+        public static OptionItem EnableGuesserMode;
+        public static OptionItem ImpostorsCanGuess;
+        public static OptionItem NeutralKillingCanGuess;
+        public static OptionItem NeutralEvilCanGuess;
+        public static OptionItem NeutralBenignCanGuess;
+        public static OptionItem CrewmatesCanGuess;
+        public static OptionItem NeutralKillingCanBeGuessed;
+        public static OptionItem NeutralEvilCanBeGuessed;
+        public static OptionItem NeutralBenignCanBeGuessed;
+        public static OptionItem CrewmateRoleCanBeGuessed;
+        public static OptionItem AddOnsCanBeGuessed;
 
         //Crewmates
         public static OptionItem CrewmateInvestigative;
@@ -390,7 +402,7 @@ namespace MoreGamemodes
         public static OptionItem NeutralKilling;
 
         //Add Ons
-        public static OptionItem AddOns;
+        public static OptionItem AddOnsCategory;
         public static OptionItem MaxAddOnsForPlayer;
         public static OptionItem HelpfulAddOns;
         public static OptionItem HarmfulAddOns;
@@ -1143,6 +1155,41 @@ namespace MoreGamemodes
             DisableZipline = TextOptionItem.Create(50400, "Disable zipline", TabGroup.AdditionalGamemodes)
                 .SetColor(Color.red);
             EnableDisableZipline = BooleanOptionItem.Create(50401, "Enable", false, TabGroup.AdditionalGamemodes, false);
+            GuesserMode = TextOptionItem.Create(50500, "Guesser mode", TabGroup.AdditionalGamemodes)
+                .SetGamemode(Gamemodes.Classic)
+                .SetColor(AddOnsHelper.AddOnColors[AddOns.Guesser]);
+            EnableGuesserMode = BooleanOptionItem.Create(50501, "Enable", false, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic);
+            ImpostorsCanGuess = BooleanOptionItem.Create(50502, "Impostors can guess", true, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            NeutralKillingCanGuess = BooleanOptionItem.Create(50503, "Neutral killing can guess", true, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            NeutralEvilCanGuess = BooleanOptionItem.Create(50504, "Neutral evil can guess", false, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            NeutralBenignCanGuess = BooleanOptionItem.Create(50505, "Neutral benign can guess", false, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            CrewmatesCanGuess = BooleanOptionItem.Create(50506, "Crewmates can guess", false, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            NeutralKillingCanBeGuessed = BooleanOptionItem.Create(50507, "Neutral killing can be guessed", true, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            NeutralEvilCanBeGuessed = BooleanOptionItem.Create(50508, "Neutral evil can be guessed", true, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            NeutralBenignCanBeGuessed = BooleanOptionItem.Create(50509, "Neutral benign can be guessed", true, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            CrewmateRoleCanBeGuessed = BooleanOptionItem.Create(50510, "\"Crewmate\" role can be guessed", true, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
+            AddOnsCanBeGuessed = BooleanOptionItem.Create(50511, "Add ons can be guessed", false, TabGroup.AdditionalGamemodes, false)
+                .SetGamemode(Gamemodes.Classic)
+                .SetParent(EnableGuesserMode);
 
             //Crewmate roles
             CrewmateInvestigative = TextOptionItem.Create(100000, "Crewmate investigative", TabGroup.CrewmateRoles)
@@ -1218,12 +1265,13 @@ namespace MoreGamemodes
             SerialKiller.SetupOptionItem();
 
             //Add ons
-            AddOns = TextOptionItem.Create(1100000, "Add ons", TabGroup.AddOns)
+            AddOnsCategory = TextOptionItem.Create(1100000, "Add ons", TabGroup.AddOns)
                 .SetColor(Color.yellow);
             MaxAddOnsForPlayer = IntegerOptionItem.Create(1100001, "Max add ons for player", new(0, 15, 1), 1, TabGroup.AddOns, false);
             HelpfulAddOns = TextOptionItem.Create(1100010, "Helpful add ons", TabGroup.AddOns)
                 .SetColor(Color.yellow);
             Bait.SetupOptionItem();
+            Guesser.SetupOptionItem();
             Radar.SetupOptionItem();
             Watcher.SetupOptionItem();
             HarmfulAddOns = TextOptionItem.Create(1200000, "Harmful add ons", TabGroup.AddOns)

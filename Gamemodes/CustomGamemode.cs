@@ -31,6 +31,10 @@ namespace MoreGamemodes
                 __instance.FilterText.text = "Phantom";
             if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Tracker)
                 __instance.FilterText.text = "Tracker";
+            if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Detective)
+                __instance.FilterText.text = "Detective";
+            if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Viper)
+                __instance.FilterText.text = "Viper";
         }
 
         public virtual void OnHudUpdate(HudManager __instance)
@@ -150,6 +154,11 @@ namespace MoreGamemodes
         public virtual bool OnCheckShapeshift(PlayerControl shapeshifter, PlayerControl target)
         {
             return true;
+        }
+
+        public virtual void OnCheckShapeshiftMeeting(PlayerControl shapeshifter, PlayerControl target)
+        {
+
         }
 
         public virtual void OnShapeshift(PlayerControl shapeshifter, PlayerControl target)

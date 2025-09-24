@@ -21,19 +21,24 @@ namespace MoreGamemodes
 
         public override bool CanGuess(PlayerControl target, AddOns addOn)
         {
-            if (target == Player) return false;
+            if (target.GetRole().IsImpostor() || AddOnsHelper.IsImpostorOnly(addOn)) return false;
             return CanGuessAddOns.GetBool();
+        }
+
+        public override bool IsCompatible(AddOns addOn)
+        {
+            return addOn != AddOns.Guesser;
         }
         
         // https://github.com/EnhancedNetwork/TownofHost-Enhanced/blob/main/Modules/GuessManager.cs#L638
-        public static void CreateMeetingButton(MeetingHud __instance)
+        public override void CreateMeetingButtons(MeetingHud __instance)
         {
             foreach (var pva in __instance.playerStates)
             {
                 if (pva.transform.FindChild("MeetingButton") != null)
                     Object.Destroy(pva.transform.FindChild("MeetingButton").gameObject);
                 var player = GameData.Instance.GetPlayerById(pva.TargetPlayerId);
-                if (player.IsDead || player.Disconnected || player.ClientId == AmongUsClient.Instance.ClientId || player.GetRole().IsImpostor() || PlayerControl.LocalPlayer.Data.IsDead || !player.GetRole().CanGetGuessed(PlayerControl.LocalPlayer, null)) continue;
+                if (player.IsDead || player.Disconnected || player.ClientId == AmongUsClient.Instance.ClientId || player.GetRole().IsImpostor() || Player.Data.IsDead || !player.GetRole().CanGetGuessed(PlayerControl.LocalPlayer, null)) continue;
                 GameObject template = pva.Buttons.transform.Find("CancelButton").gameObject;
                 GameObject targetBox = Object.Instantiate(template, pva.transform);
                 targetBox.name = "MeetingButton";
@@ -49,7 +54,7 @@ namespace MoreGamemodes
         public static void MeetingButtonOnClick(byte playerId, MeetingHud __instance)
         {
             if (__instance == null) return;
-            ShapeshifterRole shapeshifterRole = Object.Instantiate(RoleManager.Instance.AllRoles.First((RoleBehaviour r) => r.Role == RoleTypes.Shapeshifter)).Cast<ShapeshifterRole>();
+            ShapeshifterRole shapeshifterRole = Object.Instantiate(RoleManager.Instance.AllRoles.ToArray().First((RoleBehaviour r) => r.Role == RoleTypes.Shapeshifter)).Cast<ShapeshifterRole>();
             ShapeshifterMinigame minigame = Object.Instantiate(shapeshifterRole.ShapeshifterMenu);
             Object.Destroy(shapeshifterRole.gameObject);
             minigame.name = "GuessMenu";
@@ -152,7 +157,7 @@ namespace MoreGamemodes
             {
                 foreach (var role in Enum.GetValues<RoleTypes>())
                 {
-                    if (role.IsImpostor() || (role == RoleTypes.Crewmate && !CanGuessCrewmateRole.GetBool()) || role == RoleTypes.GuardianAngel) continue;
+                    if (role.IsImpostor() || (role == RoleTypes.Crewmate && !CanGuessCrewmateRole.GetBool()) || role is RoleTypes.CrewmateGhost or RoleTypes.GuardianAngel) continue;
                     int num = i % 3;
 			        int num2 = i / 3;
                     ShapeshifterPanel shapeshifterPanel = Object.Instantiate(minigame.PanelPrefab, minigame.transform);

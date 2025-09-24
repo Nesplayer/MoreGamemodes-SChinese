@@ -28,13 +28,13 @@ namespace MoreGamemodes
 
         public override void OnPet()
         {
-            if (Main.IsModded[Player.PlayerId]) return;
+            if (Player.AmOwner || Main.IsModded[Player.PlayerId]) return;
             if (BaseRole == BaseRoles.Crewmate)
             {
                 BaseRole = BaseRoles.DesyncImpostor;
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom && !pc.Data.IsDead)
+                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Crewmate, Player);
                 }
                 Player.RpcSetDesyncRole(RoleTypes.Impostor, Player);
@@ -54,6 +54,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -62,7 +64,7 @@ namespace MoreGamemodes
 
         public override bool OnCheckMurder(PlayerControl target)
         {
-            if (!Main.IsModded[Player.PlayerId] && Cooldown > 0f) return false;
+            if (!Player.AmOwner && !Main.IsModded[Player.PlayerId] && Cooldown > 0f) return false;
             if (ShieldedPlayer != byte.MaxValue || AbilityUses < 1f) return false;
             ShieldedPlayer = target.PlayerId;
             Player.RpcSetAbilityUses(0f);
@@ -84,6 +86,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -104,6 +108,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -160,7 +166,7 @@ namespace MoreGamemodes
 
         public override string GetNamePostfix()
         {
-            if (Main.IsModded[Player.PlayerId]) return "";
+            if (Player.AmOwner || Main.IsModded[Player.PlayerId]) return "";
             if (BaseRole == BaseRoles.Crewmate)
             {
                 return Utils.ColorString(Color, "\n<size=1.8>Mode: Task\n</size><size=65%>") + Utils.ColorString(Color.magenta, "(") +
@@ -186,8 +192,11 @@ namespace MoreGamemodes
         {
             if (target.PlayerId == ShieldedPlayer)
             {
-                Player.RpcReactorFlash(0.3f, Color);
-                Player.Notify(Utils.ColorString(Color, "Someone attacked shielded player!"));
+                if (SeeKillAttemptAlert.GetBool())
+                {
+                    Player.RpcReactorFlash(0.3f, Color);
+                    Player.Notify(Utils.ColorString(Color, "Someone attacked shielded player!"));
+                }
                 return false;
             }
             return true;
@@ -233,6 +242,7 @@ namespace MoreGamemodes
         public static OptionItem ShieldCooldown;
         public static OptionItem ResetKillCooldown;
         public static OptionItem ShieldedCanSeeShield;
+        public static OptionItem SeeKillAttemptAlert;
         public static void SetupOptionItem()
         {
             Chance = RoleOptionItem.Create(300200, CustomRoles.Medic, TabGroup.CrewmateRoles, false);
@@ -243,7 +253,9 @@ namespace MoreGamemodes
                 .SetValueFormat(OptionFormat.Seconds);
             ResetKillCooldown = BooleanOptionItem.Create(300203, "Reset kill cooldown", false, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
-            ShieldedCanSeeShield = BooleanOptionItem.Create(300204, "Shielded can see shield", true, TabGroup.CrewmateRoles, false)
+            ShieldedCanSeeShield = BooleanOptionItem.Create(300204, "Shielded can see shield", false, TabGroup.CrewmateRoles, false)
+                .SetParent(Chance);
+            SeeKillAttemptAlert = BooleanOptionItem.Create(300205, "See kill attempt alert", true, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             Options.RolesChance[CustomRoles.Medic] = Chance;
             Options.RolesCount[CustomRoles.Medic] = Count;

@@ -71,6 +71,11 @@ namespace MoreGamemodes
             return true;
         }
 
+        public virtual void OnCheckShapeshiftMeeting(PlayerControl target)
+        {
+
+        }
+
         public virtual void OnShapeshift(PlayerControl target)
         {
 
@@ -149,6 +154,16 @@ namespace MoreGamemodes
         public virtual string GetNamePostfix()
         {
             return "";
+        }
+
+        public virtual bool CanGuess(PlayerControl target, CustomRoles role)
+        {
+            return false;
+        }
+
+        public virtual bool CanGuess(PlayerControl target, AddOns addOn)
+        {
+            return false;
         }
 
         public virtual bool IsCompatible(AddOns addOn)

@@ -49,7 +49,6 @@ namespace MoreGamemodes
         private ConfigEntry<int>[] AllConfigEntries;
         private ConfigEntry<int> singleEntry;
 
-
         public OptionBehaviour OptionBehaviour;
 
         public event EventHandler<UpdateValueEventArgs> UpdateValueEvent;
@@ -72,7 +71,7 @@ namespace MoreGamemodes
             Children = new();
 
             AllConfigEntries = new ConfigEntry<int>[10];
-            if (Id == 1)
+            if (Id == 0)
             {
                 singleEntry = Main.Instance.Config.Bind("Current Preset", id.ToString(), DefaultValue);
                 CurrentPreset = singleEntry.Value;

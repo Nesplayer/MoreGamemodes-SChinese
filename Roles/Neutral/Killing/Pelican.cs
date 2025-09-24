@@ -34,6 +34,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -66,6 +68,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -85,6 +89,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -137,7 +143,7 @@ namespace MoreGamemodes
                 BaseRole = BaseRoles.DesyncImpostor;
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom && !pc.Data.IsDead)
+                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Crewmate, Player);
                 }
                 Player.RpcSetDesyncRole(RoleTypes.Impostor, Player);

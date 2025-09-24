@@ -13,6 +13,7 @@ namespace MoreGamemodes
             {"engineer", CustomRoles.Engineer},
             {"noisemaker", CustomRoles.Noisemaker},
             {"tracker", CustomRoles.Tracker},
+            {"detective", CustomRoles.Detective},
             {"investigator", CustomRoles.Investigator},
             {"mortician", CustomRoles.Mortician},
             {"snitch", CustomRoles.Snitch},
@@ -32,6 +33,7 @@ namespace MoreGamemodes
             {"impostor", CustomRoles.Impostor},
             {"shapeshifter", CustomRoles.Shapeshifter},
             {"phantom", CustomRoles.Phantom},
+            {"viper", CustomRoles.Viper},
             {"timefreezer", CustomRoles.TimeFreezer},
             {"escapist", CustomRoles.Escapist},
             {"droner", CustomRoles.Droner},
@@ -61,6 +63,7 @@ namespace MoreGamemodes
             {CustomRoles.Engineer, "Engineer"},
             {CustomRoles.Noisemaker, "Noisemaker"},
             {CustomRoles.Tracker, "Tracker"},
+            {CustomRoles.Detective, "Detective"},
             {CustomRoles.Investigator, "Investigator"},
             {CustomRoles.Mortician, "Mortician"},
             {CustomRoles.Snitch, "Snitch"},
@@ -80,6 +83,7 @@ namespace MoreGamemodes
             {CustomRoles.Impostor, "Impostor"},
             {CustomRoles.Shapeshifter, "Shapeshifter"},
             {CustomRoles.Phantom, "Phantom"},
+            {CustomRoles.Viper, "Viper"},
             {CustomRoles.TimeFreezer, "Time Freezer"},
             {CustomRoles.Escapist, "Escapist"},
             {CustomRoles.Droner, "Droner"},
@@ -109,6 +113,7 @@ namespace MoreGamemodes
             {CustomRoles.Engineer, "Can use the vents"},
             {CustomRoles.Noisemaker, "Send out an alert when killed"},
             {CustomRoles.Tracker, "Track a crewmate with your map"},
+            {CustomRoles.Detective, "Gather info. Solve murders."},
             {CustomRoles.Investigator, "See if someone is good or evil"},
             {CustomRoles.Mortician, "Get info about bodies"},
             {CustomRoles.Snitch, "Complete tasks to find killers"},
@@ -128,6 +133,7 @@ namespace MoreGamemodes
             {CustomRoles.Impostor, "Kill and sabotage"},
             {CustomRoles.Shapeshifter, "Disguise yourself"},
             {CustomRoles.Phantom, "Turn invisible"},
+            {CustomRoles.Viper, "Kill to dissolve bodies"},
             {CustomRoles.TimeFreezer, "Freeze time to make sneaky kills"},
             {CustomRoles.Escapist, "Mark location and teleport to it"},
             {CustomRoles.Droner, "Use drones to kill players"},
@@ -157,25 +163,27 @@ namespace MoreGamemodes
             {CustomRoles.Engineer, "Engineer (Crewmate): You can vent like impostor, but you have venting cooldown and you can stay in vent for limited time."},
             {CustomRoles.Noisemaker, "Noisemaker (Crewmate): When you get killed, you send alert. That alert informs crewmates that you died and shows direction to your body. Depending on options killers get alert too. Noisemaker can't be bait."},
             {CustomRoles.Tracker, "Tracker (Crewmate): You can track other player too see that player on your map. Player position updates every few seconds. You can track player for limited amount of time. After tracking cooldown is over, you can track another player."},
+            {CustomRoles.Detective, "Detective (Crewmate): When dead body is reported by anyone, a case is added to your notes. There you can write down where body was found. During rounds you have an interrogate ability and you can use it limited amount of times per case. After using it the player is added to suspects list in your notes and you can see where that person was exactly when the kill happened."},
             {CustomRoles.Investigator, "Investigator (Crewmate): You can use pet button to switch between task and investigate mode. In task mode you can do tasks. In investigate mode you have kill button. Use kill button to investigate player. If players is good, his name will become green. But if player is evil then his name will turn red. But some roles that are good can show as evil, also sometimes evil roles show as good. You have limited ability uses, but you can do tasks to increase it.\n\nIf you have mod installed, you don't have task and investigate mode. You can do tasks and investigate at the same time."},
             {CustomRoles.Mortician, "Mortician (Crewmate): When you report dead body, you know target's role, killer's role and how old is body. During meeting you see death reasons. Depending on options you have arrow pointing to nearest dead body."},
             {CustomRoles.Snitch, "Snitch (Crewmate): After completing all tasks you see who is impostor and depending on options neutral killer. Depending on options you can also see arrows to them. But if you're close to complete tasks, killers will know you and see arrow to you. Depending on options you might have more tasks than other crewmates. Finish tasks fast and don't get killed!"},
             {CustomRoles.Sniffer, "Sniffer (Crewmate): You can use pet button to switch between task and sniff mode. In task mode you can do tasks. In sniff mode you have kill button. Use kill button to sniff a player once per round. During meeting you can see who was near that player after you sniffed him. These players are given in random order. Invisible players don't count and shapeshifter can cause fake result.\n\nIf you have mod installed, you don't have task and sniff mode. You can do tasks and sniff at the same time."},
-            {CustomRoles.Oracle, "Oracle (Crewmate): You can use pet button to switch between task and confess mode. In task mode you can do tasks. In confess mode you have kill button. Use kill button to select x players (amount is defined in options). When you select these players, the most evil of them will confess (you will see that he confessed and his name will be red). Only you know who confessed. If 2 or more players are the most evil, then 1 random of them will confess. These are aligments from the most evil:\n1. Impostor\n2. Neutral killer\n3. Neutral evil\n4.Neutral benign\n5. Crewmate killing\n6. Crewmate non-killing\n\nIf you have mod installed, you don't have task and confess mode. You can do tasks and make people confess at the same time."},
+            {CustomRoles.Oracle, "Oracle (Crewmate): You can use pet button to switch between task and confess mode. In task mode you can do tasks. In confess mode you have kill button. Use kill button to select x players (amount is defined in options). When you select these players, the most evil of them will confess (you will see that he confessed and his name will be orange). Only you know who confessed. If 2 or more players are the most evil, then 1 random of them will confess. These are aligments from the most evil:\n1. Impostor\n2. Neutral killer\n3. Neutral evil\n4.Neutral benign\n5. Crewmate killing\n6. Crewmate non-killing\n\nIf you have mod installed, you don't have task and confess mode. You can do tasks and make people confess at the same time."},
             {CustomRoles.Sheriff, "Sheriff (Crewmate): You can use pet button to switch between task and kill mode. In task mode you can do tasks. In kill mode you have kill button. You can kill impostors and depending on options neutrals. If you try to kill someone you can't, you die from misfire. Depending on options your target dies on misfire too.\n\nIf you have mod installed, you don't have task and kill mode. You can do tasks and kill at the same time."},
             {CustomRoles.NiceGuesser, "Nice Guesser (Crewmate): You can guess evil roles during meeting. To guess player type <b>/guess PLAYER_ID ROLE_NAME</b>. You see player id in his name. For example: if you want to guess that player with number 6 is trapster, you should type <i>/guess 6 trapster</i>. If you guess role correctly, that player dies instantly. But if you're wrong, you die instead."},
-            {CustomRoles.Shaman, "Shaman (Crewmate): During meeting you can curse someone. To do this open kick menu (open chat and click red button), select player who you want to curse and click \"kick\". If that player is killer he has to kill someone next round, or he will die and is informed about it. If that player can't kill, nothing will happen. You can curse max 1 person per meeting. You can't call meeting, but you can still report dead body. You have limited ability uses, but you can do tasks to increase it.\n\nIf you have mod installed you can use curse button to curse someone."},
+            {CustomRoles.Shaman, "Shaman (Crewmate): During meeting you can curse someone. To do this click shift button during meeting and select player who you want to curse. If that player is killer he has to kill someone next round, or he will die and is informed about it. If that player can't kill, nothing will happen. You can curse max 1 person per meeting. You can't call meeting, but you can still report dead body. You have limited ability uses, but you can do tasks to increase it.\n\nIf you have mod installed you can use curse button to curse someone."},
             {CustomRoles.Immortal, "Immortal (Crewmate): After completing all tasks you can survive few kill attempts. In addition after you complete task, you get temporarily protection. If impostor tries to kill you, his cooldown will reset to 50%."},
             {CustomRoles.Medic, "Medic (Crewmate): You can use pet button to switch between task and shield mode. In task mode you can do tasks. In shield mode you have kill button. Use kill button to give shield to crewmate. Player with shield can't be killed. If player with shield die, you can give shield to another player. You get alerted when someone try to kill protected player and depending on options killer's cooldown reset to 50%. When you die, shield disappear.\n\nIf you have mod installed, you don't have task and shield mode. You can do tasks and give shield at the same time."},
             {CustomRoles.Altruist, "Altruist (Crewmate): You can use pet button to switch between report and revive mode. In report mode you can report dead bodies. In revive mode you can use report button to revive someone. After reviving someone you die. Revived player can still use their abilities, chat and do everything else. Depending on options you have arrow pointing to nearest dead body."},
             {CustomRoles.SecurityGuard, "Security Guard (Crewmate): You can use pet button near vent to block it permanently. Blocked vent can't be used by anyone. When you're looking at cameras/doorlog/binoculars you get alerted when someone die. Depending on options cameras don't blink when you're using it."},
             {CustomRoles.Mutant, "Mutant (Crewmate): You can use pet button during sabotage to instantly fix it from anywhere. You can't fix mushroom mixup sabotage."},
-            {CustomRoles.Judge, "Judge (Crewmate): During meeting you can eject anyone you want one time. To do this open kick menu (open chat and click red button), select player who you want to exile and click \"kick\". After that meeting will instantly end and that player will be ejected. Depending on options you might die after using ability.\n\nIf you have mod installed you can use judge button to exile player."},
+            {CustomRoles.Judge, "Judge (Crewmate): During meeting you can eject anyone you want one time. To do this click shift button during meeting and select player who you want to exile. After that meeting will instantly end and that player will be ejected. Depending on options you might die after using ability. You can't use your ability during discussion time, you can only do it during voting time.\n\nIf you have mod installed you can use judge button to exile player."},
             {CustomRoles.Mayor, "Mayor (Crewmate): Your vote counts as multiple votes. Use it to eject impostors easier."},
             {CustomRoles.Bloody, "Bloody (Crewmate): If you get killed, dead bodies of you are going to spawn on killer for some time making a body trail. If you get killed indirectly or get eaten by pelican, your ability doesn't work. Bloody can't be bait."},
             {CustomRoles.Impostor, "Impostor (Impostor): Regular impostor without any ability.<size=0>"},
             {CustomRoles.Shapeshifter, "Shapeshifter (Impostor): You can shapeshift into other players. You can stay in shapeshifted form for limited time. When shapeshifting there is animation and depending on options you leave shapeshift evidence."},
             {CustomRoles.Phantom, "Phantom (Impostor): You can turn invisible for limited amount of time. When disappearing or appearing there is animation. While invisible, you can't kill, vent, repair sabotages, use platform and zipline. Other impostors can see you, when you're invisible. While invisible you're 10% faster."},
+            {CustomRoles.Viper, "Viper (Impostor): Your kill button is replaced with acid ability. After killing there is an acid on dead body and it dissolves with time. There are 3 dissolve stages (almost full body, half dissolved, only bone) and after that the body disappears completely and cannot be reported."},
             {CustomRoles.TimeFreezer, "Time Freezer (Impostor): Click vanish button to freeze time for short period of time. When time is frozen other players can't move and are blind. They can't use their abilities, kill, report bodies, call meeting, sabotage, vent. You can't freeze time during sabotage."},
             {CustomRoles.Escapist, "Escapist (Impostor): You can mark position with your vanish button. You can teleport to that position by using vanish button again. After teleporting or after meeting your marked position reset and you have to mark again."},
             {CustomRoles.Droner, "Droner (Impostor): You can use vanish button to launch the drone from your position. You can control this drone and everyone can see it. Drone can stay on map for limited amount of time. When controlling drone you can kill people using it. Use pet button to stop using it or it will stop automatically when ability duration is over. After that you have cooldown before you can use your ability again. When you're using a drone, your real character is not moving (other people see you standing still). People can still interact with you when you're using a drone. When using drone you can't vent, report, call meetings and interact with objects. When ability expires a drone stays on map, but is 2 times smaller."},
@@ -205,6 +213,7 @@ namespace MoreGamemodes
             {CustomRoles.Engineer, Palette.CrewmateBlue},
             {CustomRoles.Noisemaker, Palette.CrewmateBlue},
             {CustomRoles.Tracker, Palette.CrewmateBlue},
+            {CustomRoles.Detective, Palette.CrewmateBlue},
             {CustomRoles.Investigator, Utils.HexToColor("#118385")},
             {CustomRoles.Mortician, Utils.HexToColor("#4d5254")},
             {CustomRoles.Snitch, Utils.HexToColor("#7c9923")},
@@ -224,6 +233,7 @@ namespace MoreGamemodes
             {CustomRoles.Impostor, Palette.ImpostorRed},
             {CustomRoles.Shapeshifter, Palette.ImpostorRed},
             {CustomRoles.Phantom, Palette.ImpostorRed},
+            {CustomRoles.Viper, Palette.ImpostorRed},
             {CustomRoles.TimeFreezer, Palette.ImpostorRed},
             {CustomRoles.Escapist, Palette.ImpostorRed},
             {CustomRoles.Droner, Palette.ImpostorRed},
@@ -253,6 +263,7 @@ namespace MoreGamemodes
             {CustomRoles.Engineer, CustomRoleTypes.CrewmateVanilla},
             {CustomRoles.Noisemaker, CustomRoleTypes.CrewmateVanilla},
             {CustomRoles.Tracker, CustomRoleTypes.CrewmateVanilla},
+            {CustomRoles.Detective, CustomRoleTypes.CrewmateVanilla},
             {CustomRoles.Investigator, CustomRoleTypes.CrewmateInvestigative},
             {CustomRoles.Mortician, CustomRoleTypes.CrewmateInvestigative},
             {CustomRoles.Snitch, CustomRoleTypes.CrewmateInvestigative},
@@ -272,6 +283,7 @@ namespace MoreGamemodes
             {CustomRoles.Impostor, CustomRoleTypes.ImpostorVanilla},
             {CustomRoles.Shapeshifter, CustomRoleTypes.ImpostorVanilla},
             {CustomRoles.Phantom, CustomRoleTypes.ImpostorVanilla},
+            {CustomRoles.Viper, CustomRoleTypes.ImpostorVanilla},
             {CustomRoles.TimeFreezer, CustomRoleTypes.ImpostorConcealing},
             {CustomRoles.Escapist, CustomRoleTypes.ImpostorConcealing},
             {CustomRoles.Droner, CustomRoleTypes.ImpostorConcealing},
@@ -314,6 +326,9 @@ namespace MoreGamemodes
                     break;
                 case CustomRoles.Tracker:
                     ClassicGamemode.instance.AllPlayersRole[player.PlayerId] = new Tracker(player);
+                    break;
+                case CustomRoles.Detective:
+                    ClassicGamemode.instance.AllPlayersRole[player.PlayerId] = new Detective(player);
                     break;
                 case CustomRoles.Investigator:
                     ClassicGamemode.instance.AllPlayersRole[player.PlayerId] = new Investigator(player);
@@ -371,6 +386,9 @@ namespace MoreGamemodes
                     break;
                 case CustomRoles.Phantom:
                     ClassicGamemode.instance.AllPlayersRole[player.PlayerId] = new Phantom(player);
+                    break;
+                case CustomRoles.Viper:
+                    ClassicGamemode.instance.AllPlayersRole[player.PlayerId] = new Viper(player);
                     break;
                 case CustomRoles.TimeFreezer:
                     ClassicGamemode.instance.AllPlayersRole[player.PlayerId] = new TimeFreezer(player);
@@ -506,6 +524,9 @@ namespace MoreGamemodes
         public static int GetRoleChance(CustomRoles role)
         {
             if (role is CustomRoles.Crewmate or CustomRoles.Impostor) return 0;
+            if (role is CustomRoles.Oracle && PlayerControl.AllPlayerControls.Count < Oracle.MinimumPlayersAliveForAbilityUse.GetInt()) return 0;
+            if (role == CustomRoles.NiceGuesser && Options.EnableGuesserMode.GetBool() && Options.CrewmatesCanGuess.GetBool()) return 0;
+            if (role == CustomRoles.EvilGuesser && Options.EnableGuesserMode.GetBool() && Options.ImpostorsCanGuess.GetBool()) return 0;
             if (role == CustomRoles.Undertaker && (Main.RealOptions != null ? Main.RealOptions.GetInt(Int32OptionNames.NumImpostors) : GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.NumImpostors)) < 2) return 0;
             if (IsVanilla(role))
             {
@@ -519,10 +540,14 @@ namespace MoreGamemodes
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Noisemaker);
                     case CustomRoles.Tracker:
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Tracker);
+                    case CustomRoles.Detective:
+                        return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Detective);
                     case CustomRoles.Shapeshifter:
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Shapeshifter);
                     case CustomRoles.Phantom:
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Phantom);
+                    case CustomRoles.Viper:
+                        return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Viper);
                     default:
                         return 0;
                 }
@@ -533,6 +558,9 @@ namespace MoreGamemodes
         public static int GetRoleCount(CustomRoles role)
         {
             if (role is CustomRoles.Crewmate or CustomRoles.Impostor) return 0;
+            if (role is CustomRoles.Oracle && PlayerControl.AllPlayerControls.Count < Oracle.MinimumPlayersAliveForAbilityUse.GetInt()) return 0;
+            if (role == CustomRoles.NiceGuesser && Options.EnableGuesserMode.GetBool() && Options.CrewmatesCanGuess.GetBool()) return 0;
+            if (role == CustomRoles.EvilGuesser && Options.EnableGuesserMode.GetBool() && Options.ImpostorsCanGuess.GetBool()) return 0;
             if (role == CustomRoles.Undertaker && (Main.RealOptions != null ? Main.RealOptions.GetInt(Int32OptionNames.NumImpostors) : GameOptionsManager.Instance.CurrentGameOptions.GetInt(Int32OptionNames.NumImpostors)) < 2) return 0;
             if (IsVanilla(role))
             {
@@ -546,10 +574,14 @@ namespace MoreGamemodes
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Noisemaker);
                     case CustomRoles.Tracker:
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Tracker);
+                    case CustomRoles.Detective:
+                        return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Detective);
                     case CustomRoles.Shapeshifter:
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Shapeshifter);
                     case CustomRoles.Phantom:
                         return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Phantom);
+                    case CustomRoles.Viper:
+                        return GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Viper);
                     default:
                         return 0;
                 }
@@ -567,6 +599,7 @@ public enum CustomRoles
     Engineer,
     Noisemaker,
     Tracker,
+    Detective,
     Investigator,
     Mortician,
     Snitch,
@@ -587,6 +620,7 @@ public enum CustomRoles
     Impostor,
     Shapeshifter,
     Phantom,
+    Viper,
     TimeFreezer,
     Escapist,
     Droner,
@@ -617,12 +651,15 @@ public enum BaseRoles
     Engineer,
     Noisemaker,
     Tracker,
+    Detective,
     Impostor,
     Shapeshifter,
     Phantom,
+    Viper,
     DesyncImpostor,
     DesyncShapeshifter,
     DesyncPhantom,
+    DesyncViper,
 }
 
 public enum CustomRoleTypes

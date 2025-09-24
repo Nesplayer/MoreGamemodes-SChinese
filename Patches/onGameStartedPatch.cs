@@ -126,7 +126,7 @@ namespace MoreGamemodes
             {
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.GetPet().Data.IsEmpty)
+                    if (!pc.cosmetics.HasPetEquipped())
                     {
                         pc.RpcSetPet("pet_clank");
                         Main.StandardPets[pc.PlayerId] = "pet_clank";

@@ -14,6 +14,7 @@ namespace MoreGamemodes
 
         public override int GetPlayerCount()
         {
+            if (!ShouldContinueTheGame.GetBool()) return 1;
             return 1 + AdditionalVoteCount.GetInt();
         }
 
@@ -31,6 +32,7 @@ namespace MoreGamemodes
         public static OptionItem AdditionalVoteCount;
         public static OptionItem HideAdditionalVotes;
         public static OptionItem CanBeGuessed;
+        public static OptionItem ShouldContinueTheGame;
         public static void SetupOptionItem()
         {
             Chance = RoleOptionItem.Create(400400, CustomRoles.Mayor, TabGroup.CrewmateRoles, false);
@@ -41,6 +43,8 @@ namespace MoreGamemodes
             HideAdditionalVotes = BooleanOptionItem.Create(400403, "Hide additional votes", false, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             CanBeGuessed = BooleanOptionItem.Create(400404, "Can be guessed", true, TabGroup.CrewmateRoles, false)
+                .SetParent(Chance);
+            ShouldContinueTheGame = BooleanOptionItem.Create(400405, "Should continue the game", false, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             Options.RolesChance[CustomRoles.Mayor] = Chance;
             Options.RolesCount[CustomRoles.Mayor] = Count;

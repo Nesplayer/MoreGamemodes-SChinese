@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using AmongUs.GameOptions;
 using UnityEngine;
-using Hazel;
 using Il2CppSystem.Collections.Generic;
 using System.Linq;
 
@@ -14,14 +13,11 @@ namespace MoreGamemodes
         {
             if (CustomGamemode.Instance.Gamemode == Gamemodes.Classic)
             {
-                if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.EvilGuesser)
-                    EvilGuesser.CreateMeetingButton(__instance);
-                if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.NiceGuesser)
-                    NiceGuesser.CreateMeetingButton(__instance);
-                if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.Judge)
-                    Judge.CreateMeetingButton(__instance);
-                if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.Shaman)
-                    Shaman.CreateMeetingButton(__instance);
+                PlayerControl.LocalPlayer.GetRole().CreateMeetingButtons(__instance);
+                if (PlayerControl.LocalPlayer.CanGuessInGuesserMode())
+                    Guesser.CreateGuessButtons(__instance, Options.NeutralBenignCanBeGuessed.GetBool(), Options.NeutralEvilCanBeGuessed.GetBool(), Options.NeutralKillingCanBeGuessed.GetBool(), Options.AddOnsCanBeGuessed.GetBool(), Options.CrewmateRoleCanBeGuessed.GetBool());
+                else if (PlayerControl.LocalPlayer.HasAddOn(AddOns.Guesser))
+                    Guesser.CreateGuessButtons(__instance, Guesser.CanGuessNeutralBenign.GetBool(), Guesser.CanGuessNeutralEvil.GetBool(), Guesser.CanGuessNeutralKilling.GetBool(), Guesser.CanGuessAddOns.GetBool(), Guesser.CanGuessCrewmateRole.GetBool());
             }
             if (!AmongUsClient.Instance.AmHost) return;
 
@@ -60,6 +56,16 @@ namespace MoreGamemodes
     {
         public static void Postfix(MeetingHud __instance, [HarmonyArgument(0)] MeetingHud.VoterState[] states, [HarmonyArgument(1)] NetworkedPlayerInfo exiled, [HarmonyArgument(2)] bool tie)
         {
+            if (CustomGamemode.Instance.Gamemode == Gamemodes.Classic)
+            {
+                foreach (var pva in __instance.playerStates)
+                {
+                    if (pva.transform.FindChild("MeetingButton") != null)
+                        Object.Destroy(pva.transform.FindChild("MeetingButton").gameObject);
+                    if (pva.transform.FindChild("GuessButton") != null)
+                        Object.Destroy(pva.transform.FindChild("GuessButton").gameObject);
+                }
+            }
             if (!AmongUsClient.Instance.AmHost) return;
             CustomGamemode.Instance.OnVotingComplete(__instance, states, exiled, tie);
         }
@@ -114,14 +120,11 @@ namespace MoreGamemodes
 						__instance.SetDirtyBit(1U);
                         if (CustomGamemode.Instance.Gamemode == Gamemodes.Classic)
                         {
-                            if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.EvilGuesser)
-                                EvilGuesser.CreateMeetingButton(__instance);
-                            if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.NiceGuesser)
-                                NiceGuesser.CreateMeetingButton(__instance);
-                            if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.Judge)
-                                Judge.CreateMeetingButton(__instance);
-                            if (PlayerControl.LocalPlayer.GetRole().Role == CustomRoles.Shaman)
-                                Shaman.CreateMeetingButton(__instance);
+                            PlayerControl.LocalPlayer.GetRole().CreateMeetingButtons(__instance);
+                            if (PlayerControl.LocalPlayer.CanGuessInGuesserMode())
+                                Guesser.CreateGuessButtons(__instance, Options.NeutralBenignCanBeGuessed.GetBool(), Options.NeutralEvilCanBeGuessed.GetBool(), Options.NeutralKillingCanBeGuessed.GetBool(), Options.AddOnsCanBeGuessed.GetBool(), Options.CrewmateRoleCanBeGuessed.GetBool());
+                            else if (PlayerControl.LocalPlayer.HasAddOn(AddOns.Guesser))
+                                Guesser.CreateGuessButtons(__instance, Guesser.CanGuessNeutralBenign.GetBool(), Guesser.CanGuessNeutralEvil.GetBool(), Guesser.CanGuessNeutralKilling.GetBool(), Guesser.CanGuessAddOns.GetBool(), Guesser.CanGuessCrewmateRole.GetBool());
                         }
 					}
 				}
@@ -202,6 +205,22 @@ namespace MoreGamemodes
 		    }
 		    __result = dictionary;
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.SetEnabled))]
+    class SetEnabledPatch
+    {
+        public static void Postfix(PlayerVoteArea __instance)
+        {
+            if (CustomGamemode.Instance.Gamemode == Gamemodes.Classic && __instance.TargetPlayerId == 253 && MeetingHud.Instance)
+            {
+                PlayerControl.LocalPlayer.GetRole().CreateMeetingButtons(MeetingHud.Instance);
+                if (PlayerControl.LocalPlayer.CanGuessInGuesserMode())
+                    Guesser.CreateGuessButtons(MeetingHud.Instance, Options.NeutralBenignCanBeGuessed.GetBool(), Options.NeutralEvilCanBeGuessed.GetBool(), Options.NeutralKillingCanBeGuessed.GetBool(), Options.AddOnsCanBeGuessed.GetBool(), Options.CrewmateRoleCanBeGuessed.GetBool());
+                else if (PlayerControl.LocalPlayer.HasAddOn(AddOns.Guesser))
+                    Guesser.CreateGuessButtons(MeetingHud.Instance, Guesser.CanGuessNeutralBenign.GetBool(), Guesser.CanGuessNeutralEvil.GetBool(), Guesser.CanGuessNeutralKilling.GetBool(), Guesser.CanGuessAddOns.GetBool(), Guesser.CanGuessCrewmateRole.GetBool());
+            }
         }
     }
 

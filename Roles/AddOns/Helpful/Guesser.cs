@@ -9,53 +9,46 @@ using Object = UnityEngine.Object;
 
 namespace MoreGamemodes
 {
-    public class NiceGuesser : CustomRole
+    public class Guesser : AddOn
     {
         public override bool CanGuess(PlayerControl target, CustomRoles role)
         {
-            if (target == Player) return false;
-            return CustomRolesHelper.IsImpostor(role) || (CustomRolesHelper.IsNeutralKilling(role) && CanGuessNeutralKilling.GetBool()) || (CustomRolesHelper.IsNeutralEvil(role) && CanGuessNeutralEvil.GetBool()) ||
-            (CustomRolesHelper.IsNeutralBenign(role) && CanGuessNeutralBenign.GetBool());
+            if (Player.GetRole().IsImpostor() && target.GetRole().IsImpostor()) return false; 
+            if (role == CustomRoles.Crewmate && !CanGuessCrewmateRole.GetBool()) return false;
+            return (CustomRolesHelper.IsCrewmate(role) && !Player.GetRole().IsCrewmate()) || (CustomRolesHelper.IsImpostor(role) && !Player.GetRole().IsImpostor()) ||
+                (CustomRolesHelper.IsNeutralKilling(role) && CanGuessNeutralKilling.GetBool()) || (CustomRolesHelper.IsNeutralEvil(role) && CanGuessNeutralEvil.GetBool()) ||
+                (CustomRolesHelper.IsNeutralBenign(role) && CanGuessNeutralBenign.GetBool());
         }
 
         public override bool CanGuess(PlayerControl target, AddOns addOn)
         {
-            if (target == Player) return false;
+            if (target == Player || (Player.GetRole().IsImpostor() && target.GetRole().IsImpostor())) return false;
+            if (Player.GetRole().IsImpostor() && AddOnsHelper.IsImpostorOnly(addOn)) return false;
             return CanGuessAddOns.GetBool();
         }
-
-        public override bool IsCompatible(AddOns addOn)
-        {
-            return addOn != AddOns.Guesser;
-        }
-
-        public override bool ShouldContinueGame()
-        {
-            return ShouldContinueTheGame.GetBool();
-        }
-
+        
         // https://github.com/EnhancedNetwork/TownofHost-Enhanced/blob/main/Modules/GuessManager.cs#L638
-        public override void CreateMeetingButtons(MeetingHud __instance)
+        public static void CreateGuessButtons(MeetingHud __instance, bool canGuessNB, bool canGuessNE, bool canGuessNK, bool canGuessAddOns, bool canGuessCrewmate)
         {
             foreach (var pva in __instance.playerStates)
             {
-                if (pva.transform.FindChild("MeetingButton") != null)
-                    Object.Destroy(pva.transform.FindChild("MeetingButton").gameObject);
+                if (pva.transform.FindChild("GuessButton") != null)
+                    Object.Destroy(pva.transform.FindChild("GuessButton").gameObject);
                 var player = GameData.Instance.GetPlayerById(pva.TargetPlayerId);
-                if (player.IsDead || player.Disconnected || player.ClientId == AmongUsClient.Instance.ClientId || Player.Data.IsDead || !player.GetRole().CanGetGuessed(PlayerControl.LocalPlayer, null)) continue;
+                if (player.IsDead || player.Disconnected || player.ClientId == AmongUsClient.Instance.ClientId || (player.GetRole().IsImpostor() && PlayerControl.LocalPlayer.GetRole().IsImpostor()) || PlayerControl.LocalPlayer.Data.IsDead || !player.GetRole().CanGetGuessed(PlayerControl.LocalPlayer, null)) continue;
                 GameObject template = pva.Buttons.transform.Find("CancelButton").gameObject;
                 GameObject targetBox = Object.Instantiate(template, pva.transform);
-                targetBox.name = "MeetingButton";
-                targetBox.transform.localPosition = new Vector3(-0.95f, 0.03f, -1.31f);
+                targetBox.name = "GuessButton";
+                targetBox.transform.localPosition = pva.transform.FindChild("MeetingButton") != null ? new Vector3(-0.35f, 0.03f, -1.31f) : new Vector3(-0.95f, 0.03f, -1.31f);
                 SpriteRenderer renderer = targetBox.GetComponent<SpriteRenderer>();
                 renderer.sprite = Utils.LoadSprite("MoreGamemodes.Resources.GuessIcon.png", 115f);
                 PassiveButton button = targetBox.GetComponent<PassiveButton>();
                 button.OnClick.RemoveAllListeners();
-                button.OnClick.AddListener((Action)(() => MeetingButtonOnClick(pva.TargetPlayerId, __instance)));
+                button.OnClick.AddListener((Action)(() => GuessButtonOnClick(pva.TargetPlayerId, __instance, canGuessNB, canGuessNE, canGuessNK, canGuessAddOns, canGuessCrewmate)));
             }
         }
 
-        public static void MeetingButtonOnClick(byte playerId, MeetingHud __instance)
+        public static void GuessButtonOnClick(byte playerId, MeetingHud __instance, bool canGuessNB, bool canGuessNE, bool canGuessNK, bool canGuessAddOns, bool canGuessCrewmate)
         {
             if (__instance == null) return;
             ShapeshifterRole shapeshifterRole = Object.Instantiate(RoleManager.Instance.AllRoles.ToArray().First((RoleBehaviour r) => r.Role == RoleTypes.Shapeshifter)).Cast<ShapeshifterRole>();
@@ -82,10 +75,10 @@ namespace MoreGamemodes
             minigame.potentialVictims = new List<ShapeshifterPanel>();
             foreach (var pva in __instance.playerStates)
                 pva.transform.localPosition += new Vector3(0f, 100f, 0f);
-            CreateTabs(minigame, playerId, __instance);
+            CreateTabs(minigame, playerId, __instance, canGuessNB, canGuessNE, canGuessNK, canGuessAddOns, canGuessCrewmate);
         }
 
-        public static void CreateTabs(ShapeshifterMinigame minigame, byte playerId, MeetingHud __instance)
+        public static void CreateTabs(ShapeshifterMinigame minigame, byte playerId, MeetingHud __instance, bool canGuessNB, bool canGuessNE, bool canGuessNK, bool canGuessAddOns, bool canGuessCrewmate)
         {
             if (__instance == null)
             {
@@ -98,20 +91,31 @@ namespace MoreGamemodes
             ControllerManager.Instance.CloseOverlayMenu(minigame.name);
             System.Collections.Generic.List<(int, string, Color)> tabs = new();
             tabs.Add((0, "Vanilla roles", Color.yellow));
-            tabs.Add((5, "Impostor concealing", Palette.ImpostorRed));
-            tabs.Add((6, "Impostor killing", Palette.ImpostorRed));
-            tabs.Add((7, "Impostor support", Palette.ImpostorRed));
-            if (CanGuessNeutralBenign.GetBool())
+            if (!PlayerControl.LocalPlayer.GetRole().IsCrewmate())
+            {
+                tabs.Add((1, "Crewmate investigative", Palette.CrewmateBlue));
+                tabs.Add((2, "Crewmate killing", Palette.CrewmateBlue));
+                tabs.Add((3, "Crewmate protective", Palette.CrewmateBlue));
+                tabs.Add((4, "Crewmate support", Palette.CrewmateBlue));
+            }
+            if (!PlayerControl.LocalPlayer.GetRole().IsImpostor())
+            {
+                tabs.Add((5, "Impostor concealing", Palette.ImpostorRed));
+                tabs.Add((6, "Impostor killing", Palette.ImpostorRed));
+                tabs.Add((7, "Impostor support", Palette.ImpostorRed));
+            }
+            if (canGuessNB)
                 tabs.Add((8, "Neutral benign", Color.gray));
-            if (CanGuessNeutralEvil.GetBool())
+            if (canGuessNE)
                 tabs.Add((9, "Neutral evil", Color.gray));
-            if (CanGuessNeutralKilling.GetBool())
+            if (canGuessNK)
                 tabs.Add((10, "Neutral killing", Color.gray));
-            if (CanGuessAddOns.GetBool())
+            if (canGuessAddOns)
             {
                 tabs.Add((11, "Helpful add ons", Color.yellow));
                 tabs.Add((12, "Harmful add ons", Color.yellow));
-                tabs.Add((13, "Impostor add ons", Color.yellow));
+                if (!PlayerControl.LocalPlayer.GetRole().IsImpostor())
+                    tabs.Add((13, "Impostor add ons", Color.yellow));
             }
             
             List<UiElement> list = new();
@@ -123,7 +127,7 @@ namespace MoreGamemodes
 			    shapeshifterPanel.transform.localPosition = new Vector3(minigame.XStart + num * minigame.XOffset, minigame.YStart + num2 * minigame.YOffset, -1f);
                 PassiveButton button = shapeshifterPanel.GetComponent<PassiveButton>();
                 int id = tabs[i].Item1;
-                shapeshifterPanel.shapeshift = (Action)(() => OpenTab(minigame, playerId, __instance, id));
+                shapeshifterPanel.shapeshift = (Action)(() => OpenTab(minigame, playerId, __instance, id, canGuessNB, canGuessNE, canGuessNK, canGuessAddOns, canGuessCrewmate));
                 SpriteRenderer[] componentsInChildren = shapeshifterPanel.GetComponentsInChildren<SpriteRenderer>();
 		        for (int j = 0; j < componentsInChildren.Length; j++)
 		        {
@@ -144,7 +148,7 @@ namespace MoreGamemodes
             ControllerManager.Instance.OpenOverlayMenu(minigame.name, minigame.BackButton, minigame.DefaultButtonSelected, list, false);
         }
 
-        public static void OpenTab(ShapeshifterMinigame minigame, byte playerId, MeetingHud __instance, int id)
+        public static void OpenTab(ShapeshifterMinigame minigame, byte playerId, MeetingHud __instance, int id, bool canGuessNB, bool canGuessNE, bool canGuessNK, bool canGuessAddOns, bool canGuessCrewmate)
         {
             if (__instance == null)
             {
@@ -161,7 +165,11 @@ namespace MoreGamemodes
             {
                 foreach (var role in Enum.GetValues<RoleTypes>())
                 {
-                    if (!role.IsImpostor() || role == RoleTypes.ImpostorGhost) continue;
+                    if ((role.IsImpostor() && PlayerControl.LocalPlayer.GetRole().IsImpostor()) || (!role.IsImpostor() && PlayerControl.LocalPlayer.GetRole().IsCrewmate()) ||
+                        (role == RoleTypes.Crewmate && !canGuessCrewmate) || role is RoleTypes.CrewmateGhost or RoleTypes.ImpostorGhost or RoleTypes.GuardianAngel)
+                    {
+                        continue;
+                    }
                     int num = i % 3;
 			        int num2 = i / 3;
                     ShapeshifterPanel shapeshifterPanel = Object.Instantiate(minigame.PanelPrefab, minigame.transform);
@@ -181,7 +189,7 @@ namespace MoreGamemodes
                     shapeshifterPanel.LevelNumberText.text = "<font=\"VCR SDF\"><size=15>■";
                     shapeshifterPanel.LevelNumberText.transform.localPosition += new Vector3(0.2f, -0.02f, -10f); 
                     shapeshifterPanel.NameText.transform.localPosition = Vector3.zero;
-			        shapeshifterPanel.NameText.color = Palette.ImpostorRed;
+			        shapeshifterPanel.NameText.color = role.IsImpostor() ? Palette.ImpostorRed : Palette.CrewmateBlue;
 			        minigame.potentialVictims.Add(shapeshifterPanel);
 			        list.Add(shapeshifterPanel.Button);
                     ++i;
@@ -258,7 +266,7 @@ namespace MoreGamemodes
 			int num4 = i / 3;
             ShapeshifterPanel shapeshifterPanel2 = Object.Instantiate(minigame.PanelPrefab, minigame.transform);
 			shapeshifterPanel2.transform.localPosition = new Vector3(minigame.XStart + num3 * minigame.XOffset, minigame.YStart + num4 * minigame.YOffset, -1f);
-            shapeshifterPanel2.shapeshift = (Action)(() => CreateTabs(minigame, playerId, __instance));
+            shapeshifterPanel2.shapeshift = (Action)(() => CreateTabs(minigame, playerId, __instance, canGuessNB, canGuessNE, canGuessNK, canGuessAddOns, canGuessCrewmate));
             SpriteRenderer[] componentsInChildren2 = shapeshifterPanel2.GetComponentsInChildren<SpriteRenderer>();
 	        for (int j = 0; j < componentsInChildren2.Length; j++)
 		    {
@@ -303,13 +311,11 @@ namespace MoreGamemodes
             minigame.Close();
         }
 
-        public NiceGuesser(PlayerControl player)
+        public Guesser(PlayerControl player)
         {
-            Role = CustomRoles.NiceGuesser;
-            BaseRole = BaseRoles.Crewmate;
+            Type = AddOns.Guesser;
             Player = player;
-            Utils.SetupRoleInfo(this);
-            AbilityUses = -1f;
+            Utils.SetupAddOnInfo(this);
         }
 
         public static OptionItem Chance;
@@ -317,25 +323,40 @@ namespace MoreGamemodes
         public static OptionItem CanGuessNeutralKilling;
         public static OptionItem CanGuessNeutralEvil;
         public static OptionItem CanGuessNeutralBenign;
+        public static OptionItem CanGuessCrewmateRole;
         public static OptionItem CanGuessAddOns;
-        public static OptionItem ShouldContinueTheGame;
+        public static OptionItem CrewmatesCanBecomeGuesser;
+        public static OptionItem BenignNeutralsCanBecomeGuesser;
+        public static OptionItem EvilNeutralsCanBecomeGuesser;
+        public static OptionItem KillingNeutralsCanBecomeGuesser;
+        public static OptionItem ImpostorsCanBecomeGuesser;
         public static void SetupOptionItem()
         {
-            Chance = RoleOptionItem.Create(200200, CustomRoles.NiceGuesser, TabGroup.CrewmateRoles, false);
-            Count = IntegerOptionItem.Create(200201, "Max", new(1, 15, 1), 1, TabGroup.CrewmateRoles, false)
+            Chance = AddOnOptionItem.Create(1100400, AddOns.Guesser, TabGroup.AddOns, false);
+            Count = IntegerOptionItem.Create(1100401, "Max", new(1, 15, 1), 1, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            CanGuessNeutralKilling = BooleanOptionItem.Create(200202, "Can guess neutral killing", true, TabGroup.CrewmateRoles, false)
+            CanGuessNeutralKilling = BooleanOptionItem.Create(1100402, "Can guess neutral killing", true, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            CanGuessNeutralEvil = BooleanOptionItem.Create(200203, "Can guess neutral evil", true, TabGroup.CrewmateRoles, false)
+            CanGuessNeutralEvil = BooleanOptionItem.Create(1100403, "Can guess neutral evil", true, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            CanGuessNeutralBenign = BooleanOptionItem.Create(200204, "Can guess neutral benign", true, TabGroup.CrewmateRoles, false)
+            CanGuessNeutralBenign = BooleanOptionItem.Create(1100404, "Can guess neutral benign", true, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            CanGuessAddOns = BooleanOptionItem.Create(200205, "Can guess add ons", false, TabGroup.CrewmateRoles, false)
+            CanGuessCrewmateRole = BooleanOptionItem.Create(1100405, "Can guess \"Crewmate\" role", true, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            ShouldContinueTheGame = BooleanOptionItem.Create(200206, "Should continue the game", false, TabGroup.CrewmateRoles, false)
+            CanGuessAddOns = BooleanOptionItem.Create(1100406, "Can guess add ons", false, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            Options.RolesChance[CustomRoles.NiceGuesser] = Chance;
-            Options.RolesCount[CustomRoles.NiceGuesser] = Count;
+            CrewmatesCanBecomeGuesser = BooleanOptionItem.Create(1100407, "Crewmates can become guesser", true, TabGroup.AddOns, false)
+                .SetParent(Chance);
+            BenignNeutralsCanBecomeGuesser = BooleanOptionItem.Create(1100408, "Benign neutrals can become guesser", true, TabGroup.AddOns, false)
+                .SetParent(Chance);
+            EvilNeutralsCanBecomeGuesser = BooleanOptionItem.Create(1100409, "Evil neutrals can become guesser", true, TabGroup.AddOns, false)
+                .SetParent(Chance);
+            KillingNeutralsCanBecomeGuesser = BooleanOptionItem.Create(1100410, "Killing neutrals can become guesser", true, TabGroup.AddOns, false)
+                .SetParent(Chance);
+            ImpostorsCanBecomeGuesser = BooleanOptionItem.Create(1100411, "Impostors can become guesser", true, TabGroup.AddOns, false)
+                .SetParent(Chance);
+            Options.AddOnsChance[AddOns.Guesser] = Chance;
+            Options.AddOnsCount[AddOns.Guesser] = Count;
         }
     }
 }

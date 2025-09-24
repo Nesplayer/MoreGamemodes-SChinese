@@ -516,16 +516,11 @@ namespace MoreGamemodes
                         HandleCheat(pc, "Shapeshifting while shapeshifted");
                         return true;
                     }
-                    if (pc.GetSelfRole() != RoleTypes.Shapeshifter)
+                    if (pc.GetSelfRole() != RoleTypes.Shapeshifter && !Main.IsModded[pc.PlayerId])
                     {
-                        if (!TimeSinceRoleChange.ContainsKey(pc.PlayerId) || TimeSinceRoleChange[pc.PlayerId] > 5f)
+                        if (!TimeSinceRoleChange.ContainsKey(pc.PlayerId))
                             HandleCheat(pc, "Trying to shift as not shapeshifter");
                         pc.RpcRejectShapeshift();
-                        return true;
-                    }
-                    if (((MeetingHud.Instance && MeetingHud.Instance.state != MeetingHud.VoteStates.Animating) || ExileController.Instance) && target4 != pc)
-                    {
-                        HandleCheat(pc, "Trying to shift during meeting");
                         return true;
                     }
                     break;

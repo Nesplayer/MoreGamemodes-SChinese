@@ -1,5 +1,6 @@
 using AmongUs.GameOptions;
 using UnityEngine;
+using Hazel;
 
 namespace MoreGamemodes
 {
@@ -68,7 +69,7 @@ namespace MoreGamemodes
         public override string GetNamePostfix()
         {
             if (Target != byte.MaxValue)
-                return Utils.ColorString(Color, "\n<size=1.8>Target: " + Main.StandardNames[Target] + "</size>");
+                return Utils.ColorString(Color, "\n<size=1.8>Target: " + Main.StandardNames[Target] + "\n</size>");
             return Utils.ColorString(Color, "<size=1.8>Target: <b>None</b></size>");
         }
 
@@ -91,7 +92,25 @@ namespace MoreGamemodes
                 target.RpcTeleport(Player.transform.position);
                 ClassicGamemode.instance.PlayerKiller[target.PlayerId] = killer.PlayerId;
                 ++Main.PlayerKills[killer.PlayerId];
-                target.RpcMurderPlayer(target, true);
+                if (killer.GetRole().Role == CustomRoles.Viper)
+                {
+                    target.StartCoroutine(target.CoSetRole(RoleTypes.Viper, true));
+                    target.MurderPlayer(target, MurderResultFlags.Succeeded);
+                    CustomRpcSender sender = CustomRpcSender.Create(SendOption.Reliable);
+                    sender.StartMessage(-1);
+                    sender.StartRpc(target.NetId, (byte)RpcCalls.SetRole)
+                        .Write((ushort)RoleTypes.Viper)
+                        .Write(true)
+                        .EndRpc();
+                    sender.StartRpc(target.NetId, (byte)RpcCalls.MurderPlayer)
+                        .WriteNetObject(target)
+                        .Write((int)MurderResultFlags.Succeeded)
+                        .EndRpc();
+                    sender.EndMessage();
+                    sender.SendMessage();
+                }
+                else
+                    target.RpcMurderPlayer(target, true);
                 killer.RpcSetKillTimer(Main.OptionKillCooldowns[killer.PlayerId]);
                 Target = byte.MaxValue;
                 AbilityDuration = 0f;

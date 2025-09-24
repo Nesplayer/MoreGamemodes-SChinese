@@ -58,6 +58,7 @@ namespace MoreGamemodes
 
         public override bool ShouldContinueGame()
         {
+            if (!ShouldContinueTheGame.GetBool()) return false;
             return Object.FindObjectOfType<DeadBody>() != null;
         }
 
@@ -89,12 +90,15 @@ namespace MoreGamemodes
         public static OptionItem Chance;
         public static OptionItem Count;
         public static OptionItem SeeArrowToNearestBody;
+        public static OptionItem ShouldContinueTheGame;
         public static void SetupOptionItem()
         {
             Chance = RoleOptionItem.Create(800200, CustomRoles.Amnesiac, TabGroup.NeutralRoles, false);
             Count = IntegerOptionItem.Create(800201, "Max", new(1, 15, 1), 1, TabGroup.NeutralRoles, false)
                 .SetParent(Chance);
             SeeArrowToNearestBody = BooleanOptionItem.Create(800202, "See arrow to nearest body", true, TabGroup.NeutralRoles, false)
+                .SetParent(Chance);
+            ShouldContinueTheGame = BooleanOptionItem.Create(800203, "Should continue the game", true, TabGroup.NeutralRoles, false)
                 .SetParent(Chance);
             Options.RolesChance[CustomRoles.Amnesiac] = Chance;
             Options.RolesCount[CustomRoles.Amnesiac] = Count;

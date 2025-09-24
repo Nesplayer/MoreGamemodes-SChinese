@@ -410,11 +410,11 @@ namespace MoreGamemodes
                             break;
                         case "trackercount":
                             subArgs = args.Length < 3 ? "" : args[2];
-                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Shapeshifter));
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Tracker));
                             break;
                         case "trackerchance":
                             subArgs = args.Length < 3 ? "" : args[2];
-                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Shapeshifter), int.Parse(subArgs));
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Tracker), int.Parse(subArgs));
                             break;
                         case "trackingcooldown":
                             subArgs = args.Length < 3 ? "" : args[2];
@@ -430,11 +430,11 @@ namespace MoreGamemodes
                             break;
                         case "noisemakercount":
                             subArgs = args.Length < 3 ? "" : args[2];
-                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Shapeshifter));
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Noisemaker));
                             break;
                         case "noisemakerchance":
                             subArgs = args.Length < 3 ? "" : args[2];
-                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Shapeshifter), int.Parse(subArgs));
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Noisemaker), int.Parse(subArgs));
                             break;
                         case "impostorsgetalert":
                             subArgs = args.Length < 3 ? "" : args[2];
@@ -455,11 +455,11 @@ namespace MoreGamemodes
                             break;
                         case "phantomcount":
                             subArgs = args.Length < 3 ? "" : args[2];
-                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Shapeshifter));
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Phantom));
                             break;
                         case "phantomchance":
                             subArgs = args.Length < 3 ? "" : args[2];
-                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Shapeshifter), int.Parse(subArgs));
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Phantom, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Phantom), int.Parse(subArgs));
                             break;
                         case "vanishduration":
                             subArgs = args.Length < 3 ? "" : args[2];
@@ -468,6 +468,30 @@ namespace MoreGamemodes
                         case "vanishcooldown":
                             subArgs = args.Length < 3 ? "" : args[2];
                             GameOptionsManager.Instance.CurrentGameOptions.SetFloat(FloatOptionNames.PhantomCooldown, float.Parse(subArgs));
+                            break;
+                        case "detectivecount":
+                            subArgs = args.Length < 3 ? "" : args[2];
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Detective, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Detective));
+                            break;
+                        case "detectivechance":
+                            subArgs = args.Length < 3 ? "" : args[2];
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Detective, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Detective), int.Parse(subArgs));
+                            break;
+                        case "suspectspercase":
+                            subArgs = args.Length < 3 ? "" : args[2];
+                            GameOptionsManager.Instance.CurrentGameOptions.SetFloat(FloatOptionNames.DetectiveSuspectLimit, float.Parse(subArgs));
+                            break;
+                        case "vipercount":
+                            subArgs = args.Length < 3 ? "" : args[2];
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Viper, int.Parse(subArgs), GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Viper));
+                            break;
+                        case "viperchance":
+                            subArgs = args.Length < 3 ? "" : args[2];
+                            GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.SetRoleRate(RoleTypes.Viper, GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Viper), int.Parse(subArgs));
+                            break;
+                        case "dissolvetime":
+                            subArgs = args.Length < 3 ? "" : args[2];
+                            GameOptionsManager.Instance.CurrentGameOptions.SetFloat(FloatOptionNames.ViperDissolveTime, float.Parse(subArgs));
                             break;
                         case "ghostdotasks":
                             subArgs = args.Length < 3 ? "" : args[2];
@@ -861,6 +885,9 @@ namespace MoreGamemodes
                                 case "disablezipline":
                                     Utils.SendChat("Disable Zipline: Players can't use zipline on the fungle.", "Gamemodes");
                                     break;
+                                case "guessermode":
+                                    Utils.SendChat("All players on teams specified in options can guess other people roles. To guess player type <b>/guess PLAYER_ID ROLE_NAME</b>. You see player id in his name. For example: if you want to guess that player with number 2 is sheriff, you should type <i>/guess 2 sheriff</i>. If you guess role correctly, that player dies instantly. But if you're wrong, you die instead. This additional gamemode works only in classic.", "Gamemodes");
+                                    break;
                                 default:
                                     switch (Options.CurrentGamemode)
                                     {
@@ -1166,6 +1193,8 @@ namespace MoreGamemodes
                         int noisemakers = 0;
                         int phantoms = 0;
                         int trackers = 0;
+                        int detectives = 0;
+                        int vipers = 0;
                         int alivePlayers = 0;
                         int deadPlayers = 0;
                         int killedPlayers = 0;
@@ -1189,6 +1218,8 @@ namespace MoreGamemodes
                                 case RoleTypes.Noisemaker: ++noisemakers; break;
                                 case RoleTypes.Phantom: ++phantoms; break;
                                 case RoleTypes.Tracker: ++trackers; break;
+                                case RoleTypes.Detective: ++detectives; break;
+                                case RoleTypes.Viper: ++vipers; break;
                             }
                         }
                         for (byte i = 0; i <= 14; ++i)
@@ -1218,9 +1249,11 @@ namespace MoreGamemodes
                         msg += engineers + " engineers\n";
                         msg += noisemakers + " noisemakers\n";
                         msg += trackers + " trackers\n";
+                        msg += detectives + " detectives\n";
                         msg += impostors + " impostors\n";
                         msg += shapeshifters + " shapeshifters\n";
                         msg += phantoms + " phantoms\n\n";
+                        msg += vipers + " vipers\n\n";
                         msg += alivePlayers + " players are alive\n";
                         msg += deadPlayers + " players died:\n";
                         msg += killedPlayers + " by getting killed\n";
@@ -1341,14 +1374,19 @@ namespace MoreGamemodes
                     }
                     if (CustomRolesHelper.CommandRoleNames.ContainsKey(role))
                     {
-                        if (!PlayerControl.LocalPlayer.GetRole().CanGuess(target, CustomRolesHelper.CommandRoleNames[role]) ||
-                            !target.GetRole().CanGetGuessed(PlayerControl.LocalPlayer, CustomRolesHelper.CommandRoleNames[role]) ||
+                        bool canGuess = PlayerControl.LocalPlayer.GetRole().CanGuess(target, CustomRolesHelper.CommandRoleNames[role]);
+                        foreach (var addOn in PlayerControl.LocalPlayer.GetAddOns())
+                        {
+                            if (addOn.CanGuess(target, CustomRolesHelper.CommandRoleNames[role]))
+                                canGuess = true;
+                        }
+                        if (!canGuess || !target.GetRole().CanGetGuessed(PlayerControl.LocalPlayer, CustomRolesHelper.CommandRoleNames[role]) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.Immortal && !Immortal.CanBeGuessed.GetBool()) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.SecurityGuard && !SecurityGuard.CanBeGuessed.GetBool()) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.Mortician && !Mortician.CanBeGuessed.GetBool()) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.Mayor && !Mayor.CanBeGuessed.GetBool()))
                         {
-                            PlayerControl.LocalPlayer.RpcSendMessage("You can't guess this player!", "Warning");
+                            PlayerControl.LocalPlayer.RpcSendMessage("You can't guess this player or role!", "Warning");
                             break;
                         }
                         if (target.GetRole().Role == CustomRolesHelper.CommandRoleNames[role])
@@ -1358,7 +1396,7 @@ namespace MoreGamemodes
                             target.RpcGuessPlayer();
                             ++Main.PlayerKills[PlayerControl.LocalPlayer.PlayerId];
                             Utils.SendSpam(true);
-                            new LateTask(() => Utils.SendChat(Main.StandardNames[playerId] + " was guessed", "Guesser"), 1f);
+                            new LateTask(() => Utils.SendChat(Main.StandardNames[playerId] + " was guessed", "Guesser"), 0.5f);
                         }
                         else
                         {
@@ -1366,15 +1404,20 @@ namespace MoreGamemodes
                             PlayerControl.LocalPlayer.RpcExileV2();
                             PlayerControl.LocalPlayer.RpcGuessPlayer();
                             Utils.SendSpam(true);
-                            new LateTask(() => Utils.SendChat(Main.StandardNames[PlayerControl.LocalPlayer.PlayerId] + " was guessed", "Guesser"), 1f);
+                            new LateTask(() => Utils.SendChat(Main.StandardNames[PlayerControl.LocalPlayer.PlayerId] + " was guessed", "Guesser"), 0.5f);
                         }
                     }
                     else
                     {
-                        if (!PlayerControl.LocalPlayer.GetRole().CanGuess(target, AddOnsHelper.CommandAddOnNames[role]) ||
-                            (AddOnsHelper.CommandAddOnNames[role] == AddOns.Bait && !Bait.CanBeGuessed.GetBool()))
+                        bool canGuess = PlayerControl.LocalPlayer.GetRole().CanGuess(target, AddOnsHelper.CommandAddOnNames[role]);
+                        foreach (var addOn in PlayerControl.LocalPlayer.GetAddOns())
                         {
-                            PlayerControl.LocalPlayer.RpcSendMessage("You can't guess this player!", "Warning");
+                            if (addOn.CanGuess(target, AddOnsHelper.CommandAddOnNames[role]))
+                                canGuess = true;
+                        }
+                        if (!canGuess || (AddOnsHelper.CommandAddOnNames[role] == AddOns.Bait && !Bait.CanBeGuessed.GetBool()))
+                        {
+                            PlayerControl.LocalPlayer.RpcSendMessage("You can't guess this player or role!", "Warning");
                             break;
                         }
                         if (target.HasAddOn(AddOnsHelper.CommandAddOnNames[role]))
@@ -1840,6 +1883,9 @@ namespace MoreGamemodes
                                 case "disablezipline":
                                     player.RpcSendMessage("Disable Zipline: Players can't use zipline on the fungle.", "Gamemodes");
                                     break;
+                                case "guessermode":
+                                    player.RpcSendMessage("Guesser mode: All players on teams specified in options can guess other people roles. To guess player type <b>/guess PLAYER_ID ROLE_NAME</b>. You see player id in his name. For example: if you want to guess that player with number 2 is sheriff, you should type <i>/guess 2 sheriff</i>. If you guess role correctly, that player dies instantly. But if you're wrong, you die instead. This additional gamemode works only in classic.", "Gamemodes");
+                                    break;
                                 default:
                                     switch (Options.CurrentGamemode)
                                     {
@@ -2112,6 +2158,8 @@ namespace MoreGamemodes
                         int noisemakers = 0;
                         int phantoms = 0;
                         int trackers = 0;
+                        int detectives = 0;
+                        int vipers = 0;
                         int alivePlayers = 0;
                         int deadPlayers = 0;
                         int killedPlayers = 0;
@@ -2135,6 +2183,8 @@ namespace MoreGamemodes
                                 case RoleTypes.Noisemaker: ++noisemakers; break;
                                 case RoleTypes.Phantom: ++phantoms; break;
                                 case RoleTypes.Tracker: ++trackers; break;
+                                case RoleTypes.Detective: ++detectives; break;
+                                case RoleTypes.Viper: ++vipers; break;
                             }
                         }
                         for (byte i = 0; i <= 14; ++i)
@@ -2164,9 +2214,11 @@ namespace MoreGamemodes
                         msg += engineers + " engineers\n";
                         msg += noisemakers + " noisemakers\n";
                         msg += trackers + " trackers\n";
+                        msg += detectives + " detectives\n";
                         msg += impostors + " impostors\n";
                         msg += shapeshifters + " shapeshifters\n";
                         msg += phantoms + " phantoms\n\n";
+                        msg += vipers + " vipers\n";
                         msg += alivePlayers + " players are alive\n";
                         msg += deadPlayers + " players died:\n";
                         msg += killedPlayers + " by getting killed\n";
@@ -2285,14 +2337,19 @@ namespace MoreGamemodes
                     }
                     if (CustomRolesHelper.CommandRoleNames.ContainsKey(role))
                     {
-                        if (!player.GetRole().CanGuess(target, CustomRolesHelper.CommandRoleNames[role]) ||
-                            !target.GetRole().CanGetGuessed(player, CustomRolesHelper.CommandRoleNames[role]) ||
+                        bool canGuess = player.GetRole().CanGuess(target, CustomRolesHelper.CommandRoleNames[role]);
+                        foreach (var addOn in player.GetAddOns())
+                        {
+                            if (addOn.CanGuess(target, CustomRolesHelper.CommandRoleNames[role]))
+                                canGuess = true;
+                        }
+                        if (!canGuess || !target.GetRole().CanGetGuessed(player, CustomRolesHelper.CommandRoleNames[role]) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.Immortal && !Immortal.CanBeGuessed.GetBool()) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.SecurityGuard && !SecurityGuard.CanBeGuessed.GetBool()) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.Mortician && !Mortician.CanBeGuessed.GetBool()) ||
                             (CustomRolesHelper.CommandRoleNames[role] == CustomRoles.Mayor && !Mayor.CanBeGuessed.GetBool()))
                         {
-                            player.RpcSendMessage("You can't guess this player!", "Warning");
+                            player.RpcSendMessage("You can't guess this player or role!", "Warning");
                             break;
                         }
                         if (target.GetRole().Role == CustomRolesHelper.CommandRoleNames[role])
@@ -2302,7 +2359,7 @@ namespace MoreGamemodes
                             target.RpcGuessPlayer();
                             ++Main.PlayerKills[player.PlayerId];
                             Utils.SendSpam(true);
-                            new LateTask(() => Utils.SendChat(Main.StandardNames[playerId] + " was guessed", "Guesser"), 1f);
+                            new LateTask(() => Utils.SendChat(Main.StandardNames[playerId] + " was guessed", "Guesser"), 0.5f);
                         }
                         else
                         {
@@ -2310,15 +2367,20 @@ namespace MoreGamemodes
                             player.RpcExileV2();
                             player.RpcGuessPlayer();
                             Utils.SendSpam(true);
-                            new LateTask(() => Utils.SendChat(Main.StandardNames[player.PlayerId] + " was guessed", "Guesser"), 1f);
+                            new LateTask(() => Utils.SendChat(Main.StandardNames[player.PlayerId] + " was guessed", "Guesser"), 0.5f);
                         }
                     }
                     else
                     {
-                        if (!player.GetRole().CanGuess(target, AddOnsHelper.CommandAddOnNames[role]) ||
-                            (AddOnsHelper.CommandAddOnNames[role] == AddOns.Bait && !Bait.CanBeGuessed.GetBool()))
+                        bool canGuess = player.GetRole().CanGuess(target, AddOnsHelper.CommandAddOnNames[role]);
+                        foreach (var addOn in player.GetAddOns())
                         {
-                            player.RpcSendMessage("You can't guess this player!", "Warning");
+                            if (addOn.CanGuess(target, AddOnsHelper.CommandAddOnNames[role]))
+                                canGuess = true;
+                        }
+                        if (!canGuess || (AddOnsHelper.CommandAddOnNames[role] == AddOns.Bait && !Bait.CanBeGuessed.GetBool()))
+                        {
+                            player.RpcSendMessage("You can't guess this player or role!", "Warning");
                             break;
                         }
                         if (target.HasAddOn(AddOnsHelper.CommandAddOnNames[role]))

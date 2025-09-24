@@ -82,6 +82,21 @@ namespace MoreGamemodes
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
     class MurderPlayerPatch
     {
+        public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target, [HarmonyArgument(1)] MurderResultFlags resultFlags)
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
+            PlayerControl killer = __instance;
+
+            if (CustomGamemode.Instance.Gamemode == Gamemodes.Classic && killer.GetRole().Role == CustomRoles.Viper && killer == target)
+            {
+                foreach (var pc in PlayerControl.AllPlayerControls)
+                {
+                    var role = Main.DesyncRoles.ContainsKey((killer.PlayerId, pc.PlayerId)) ? Main.DesyncRoles[(killer.PlayerId, pc.PlayerId)] : Main.StandardRoles[killer.PlayerId];
+                    if (role == RoleTypes.Viper)
+                        killer.RpcSetDesyncRole(RoleTypes.Impostor, pc);
+                }
+            }
+        }
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target, [HarmonyArgument(1)] MurderResultFlags resultFlags)
         {
             if (!AmongUsClient.Instance.AmHost) return;
@@ -129,7 +144,13 @@ namespace MoreGamemodes
             if (AmongUsClient.Instance.IsGameOver || !AmongUsClient.Instance.AmHost) return false;
             if (!Main.GameStarted) return false;
             if (!target || target.Data == null || shapeshifter.Data.IsDead || shapeshifter.Data.Disconnected) return false;
+            if (target.PlayerId == 254 || target.PlayerId == 255) return false;
             if (target.IsMushroomMixupActive() && shouldAnimate) return false;
+            if (MeetingHud.Instance && MeetingHud.Instance.state is MeetingHud.VoteStates.Discussion or MeetingHud.VoteStates.NotVoted or MeetingHud.VoteStates.Voted && shouldAnimate)
+            {
+                CustomGamemode.Instance.OnCheckShapeshiftMeeting(shapeshifter, target);
+                return false;
+            }
             if ((MeetingHud.Instance || ExileController.Instance) && shouldAnimate) return false;
             return true;
         }
@@ -142,17 +163,8 @@ namespace MoreGamemodes
         {
             if (!AmongUsClient.Instance.AmHost) return;
             var shapeshifter = __instance;
-            if (shapeshifter.PlayerId == 254) return;
-            var shapeshifting = shapeshifter != target;
-            switch (shapeshifting)
-            {
-                case true:
-                    Main.AllShapeshifts[shapeshifter.PlayerId] = target.PlayerId;
-                    break;
-                case false:
-                    Main.AllShapeshifts[shapeshifter.PlayerId] = shapeshifter.PlayerId;
-                    break;
-            }
+            if (shapeshifter.PlayerId == 254 || shapeshifter.PlayerId == 255 || target.PlayerId == 254 || target.PlayerId == 255) return;
+            Main.AllShapeshifts[shapeshifter.PlayerId] = target.PlayerId;
             CustomGamemode.Instance.OnShapeshift(shapeshifter, target);
         }
     }

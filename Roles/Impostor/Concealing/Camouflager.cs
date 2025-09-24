@@ -14,14 +14,14 @@ namespace MoreGamemodes
                 __instance.AbilityButton.SetDisabled();
         }
 
-        public void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
+        public override void OnMeeting()
         {
             if (AbilityDuration > 0f)
             {
                 AbilityDuration = -1f;
                 if (ClassicGamemode.instance.IsCamouflageActive)
                 {
-                    Utils.RevertCamouflage();
+                    new LateTask(() => Utils.RevertCamouflage(), 0f);
                     ClassicGamemode.instance.IsCamouflageActive = false;
                     ClassicGamemode.instance.SendRPC(GameManager.Instance);
                 }
@@ -80,19 +80,6 @@ namespace MoreGamemodes
         public override void OnRevive()
         {
             AbilityDuration = -1f;
-        }
-
-        public static void OnGlobalReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
-        {
-            foreach (var pc in PlayerControl.AllPlayerControls)
-            {
-                if (pc.GetRole().Role == CustomRoles.Camouflager)
-                {
-                    Camouflager camouflagerRole = pc.GetRole() as Camouflager;
-                    if (camouflagerRole == null) continue;
-                    camouflagerRole.OnReportDeadBody(reporter, target);
-                }
-            }
         }
 
         public Camouflager(PlayerControl player)

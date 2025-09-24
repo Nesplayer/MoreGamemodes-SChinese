@@ -208,7 +208,7 @@ namespace MoreGamemodes
         {
             var baseColorId = deadBodyParent.Data.DefaultOutfit.ColorId;
             deadBodyParent.Data.DefaultOutfit.ColorId = colorId;
-            DeadBody deadBody = Object.Instantiate(GameManager.Instance.DeadBodyPrefab);
+            DeadBody deadBody = Object.Instantiate(GameManager.Instance.GetDeadBody(deadBodyParent.Data.Role));
             deadBody.enabled = false;
             deadBody.ParentId = deadBodyParent.PlayerId;
             foreach (SpriteRenderer b in deadBody.bodyRenderers)
@@ -344,6 +344,8 @@ namespace MoreGamemodes
             if (role == RoleTypes.Noisemaker) return "Noisemaker";
             if (role == RoleTypes.Phantom) return "Phantom";
             if (role == RoleTypes.Tracker) return "Tracker";
+            if (role == RoleTypes.Detective) return "Detective";
+            if (role == RoleTypes.Viper) return "Viper";
             return "???";
         }
 
@@ -373,6 +375,7 @@ namespace MoreGamemodes
             if (role == RoleTypes.Impostor) return true;
             if (role == RoleTypes.Shapeshifter) return true;
             if (role == RoleTypes.Phantom) return true;
+            if (role == RoleTypes.Viper) return true;
             if (role == RoleTypes.ImpostorGhost) return true;
             return false;
         }
@@ -783,6 +786,11 @@ namespace MoreGamemodes
                     text += "\n → Tracking delay: " + (Main.RealOptions != null ? Main.RealOptions.GetFloat(FloatOptionNames.TrackerDelay) : GameOptionsManager.Instance.CurrentGameOptions.GetFloat(FloatOptionNames.TrackerDelay)) + "s";
                     text += "\n → Tracking duration: " + (Main.RealOptions != null ? Main.RealOptions.GetFloat(FloatOptionNames.TrackerDuration) : GameOptionsManager.Instance.CurrentGameOptions.GetFloat(FloatOptionNames.TrackerDuration)) + "s";
                     return text;
+                case CustomRoles.Detective:
+                    text += ColorString(Palette.CrewmateBlue, "Detective") + ": " + GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Detective) + "%";
+                    text += "\n → Max: " + GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Detective);
+                    text += "\n → Suspects per case: " + (Main.RealOptions != null ? Main.RealOptions.GetFloat(FloatOptionNames.DetectiveSuspectLimit) : GameOptionsManager.Instance.CurrentGameOptions.GetFloat(FloatOptionNames.DetectiveSuspectLimit));
+                    return text;
                 case CustomRoles.Shapeshifter:
                     text += ColorString(Palette.ImpostorRed, "Shapeshifter") + ": " + GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Shapeshifter) + "%";
                     text += "\n → Max: " + GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Shapeshifter);
@@ -795,6 +803,11 @@ namespace MoreGamemodes
                     text += "\n → Max: " + GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Phantom);
                     text += "\n → Vanish duration: " + (Main.RealOptions != null ? Main.RealOptions.GetFloat(FloatOptionNames.PhantomDuration) : GameOptionsManager.Instance.CurrentGameOptions.GetFloat(FloatOptionNames.PhantomDuration)) + "s";
                     text += "\n → Vanish cooldown: " + (Main.RealOptions != null ? Main.RealOptions.GetFloat(FloatOptionNames.PhantomCooldown) : GameOptionsManager.Instance.CurrentGameOptions.GetFloat(FloatOptionNames.PhantomCooldown)) + "s";
+                    return text;
+                case CustomRoles.Viper:
+                    text += ColorString(Palette.ImpostorRed, "Viper") + ": " + GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetChancePerGame(RoleTypes.Viper) + "%";
+                    text += "\n → Max: " + GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(RoleTypes.Viper);
+                    text += "\n → Dissolve time: " + (Main.RealOptions != null ? Main.RealOptions.GetFloat(FloatOptionNames.ViperDissolveTime) : GameOptionsManager.Instance.CurrentGameOptions.GetFloat(FloatOptionNames.ViperDissolveTime)) + "s";
                     return text;
             }
             for (int index = 0; index < OptionItem.AllOptions.Count; index++)
@@ -863,7 +876,7 @@ namespace MoreGamemodes
                    regionInfo.PingServer.EndsWith(Domain, StringComparison.Ordinal) &&
                    regionInfo.Servers.All(serverInfo => serverInfo.Ip.EndsWith(Domain, StringComparison.Ordinal));
         }
-        
+
         public static void Camouflage()
         {
             if (!AmongUsClient.Instance.AmHost) return;
@@ -873,7 +886,7 @@ namespace MoreGamemodes
                     pc.RpcSetOutfit(15, "", "", "pet_test", "");
             }
         }
-        
+
         public static void RevertCamouflage()
         {
             if (!AmongUsClient.Instance.AmHost) return;

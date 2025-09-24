@@ -7,16 +7,6 @@ namespace MoreGamemodes
 {
     public class HideAndSeekGamemode : CustomGamemode
     {
-        public override void OnExile(NetworkedPlayerInfo exiled)
-        {
-            Main.Timer = 0f;
-            foreach (var pc in PlayerControl.AllPlayerControls)
-            {
-                if (pc.Data.Role.IsImpostor)
-                    pc.SyncPlayerSettings();
-            }
-        }
-
         public override void OnSetFilterText(HauntMenuMinigame __instance)
         {
             if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Crewmate)
@@ -41,6 +31,10 @@ namespace MoreGamemodes
                 __instance.FilterText.text = "Phantom";
             if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Tracker)
                 __instance.FilterText.text = "Tracker";
+            if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Detective)
+                __instance.FilterText.text = "Detective";
+            if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Viper)
+                __instance.FilterText.text = "Viper";
         }
         
         public override void OnHudUpdate(HudManager __instance)
@@ -157,6 +151,21 @@ namespace MoreGamemodes
             return true;
         }
 
+        public override void OnShapeshift(PlayerControl shapeshifter, PlayerControl target)
+        {
+            if (!Options.HnSImpostorsAreVisible.GetBool()) return;
+            if (target.Data.Role.IsImpostor)
+            {
+                foreach (var pc in PlayerControl.AllPlayerControls)
+                    Main.NameColors[(shapeshifter.PlayerId, pc.PlayerId)] = Color.red;
+            }
+            else
+            {
+                foreach (var pc in PlayerControl.AllPlayerControls)
+                    Main.NameColors[(shapeshifter.PlayerId, pc.PlayerId)] = Color.blue;
+            }
+        }
+
         public override bool OnReportDeadBody(PlayerControl __instance, NetworkedPlayerInfo target, bool force)
         {
             return false;
@@ -197,6 +206,7 @@ namespace MoreGamemodes
         public override IGameOptions BuildGameOptions(PlayerControl player, IGameOptions opt)
         {
             opt.SetInt(Int32OptionNames.NumEmergencyMeetings, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
             if (Main.Timer < Options.HnSImpostorsBlindTime.GetFloat() && player.Data.Role != null && player.Data.Role.IsImpostor)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);

@@ -7,16 +7,6 @@ namespace MoreGamemodes
 {
     public class ShiftAndSeekGamemode : CustomGamemode
     {
-        public override void OnExile(NetworkedPlayerInfo exiled)
-        {
-            Main.Timer = 0f;
-            foreach (var pc in PlayerControl.AllPlayerControls)
-            {
-                if (pc.Data.Role.IsImpostor)
-                    pc.SyncPlayerSettings();
-            }
-        }
-        
         public override void OnSetFilterText(HauntMenuMinigame __instance)
         {
             if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Engineer)
@@ -196,6 +186,8 @@ namespace MoreGamemodes
             opt.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Viper, 0, 0);
             if (Main.Timer < Options.SnSImpostorsBlindTime.GetFloat() && player.Data.Role != null && player.Data.Role.IsImpostor)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);

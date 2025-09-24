@@ -56,10 +56,10 @@ namespace MoreGamemodes
         }
     }
 
-    [HarmonyPatch(typeof(NormalGameOptionsV09), nameof(NormalGameOptionsV09.Serialize))]
-    class NormalGameOptionsV09SerializePatch
+    [HarmonyPatch(typeof(NormalGameOptionsV10), nameof(NormalGameOptionsV10.Serialize))]
+    class NormalGameOptionsV10SerializePatch
     {
-        public static bool Prefix([HarmonyArgument(0)] MessageWriter writer, [HarmonyArgument(1)] NormalGameOptionsV09 gameOptions)
+        public static bool Prefix([HarmonyArgument(0)] MessageWriter writer, [HarmonyArgument(1)] NormalGameOptionsV10 gameOptions)
         {
             if (!AmongUsClient.Instance.AmHost) return true;
             writer.Write((byte)gameOptions.SpecialMode);
@@ -86,20 +86,20 @@ namespace MoreGamemodes
 			writer.Write(gameOptions.AnonymousVotes);
 			writer.Write((byte)gameOptions.TaskBarMode);
 			writer.Write((byte)gameOptions.Tag);
-			RoleOptionsCollectionV09.Serialize(writer, gameOptions.roleOptions);
+			RoleOptionsCollectionV10.Serialize(writer, gameOptions.roleOptions);
             writer.Write(gameOptions.MapId == 3);
             return false;
         }
     }
     
-    [HarmonyPatch(typeof(NormalGameOptionsV09), nameof(NormalGameOptionsV09.Deserialize))]
-    class NormalGameOptionsV09DeserializePatch
+    [HarmonyPatch(typeof(NormalGameOptionsV10), nameof(NormalGameOptionsV10.Deserialize))]
+    class NormalGameOptionsV10DeserializePatch
     {
-        public static bool Prefix([HarmonyArgument(0)] MessageReader reader, [HarmonyArgument(1)] bool isAprilFoolsMode, [HarmonyArgument(2)] ILogger logger, ref NormalGameOptionsV09 __result)
+        public static bool Prefix([HarmonyArgument(0)] MessageReader reader, [HarmonyArgument(1)] bool isAprilFoolsMode, [HarmonyArgument(2)] ILogger logger, ref NormalGameOptionsV10 __result)
         {
             try
 			{
-				NormalGameOptionsV09 normalGameOptionsV = new(logger);
+				NormalGameOptionsV10 normalGameOptionsV = new(logger);
 				if (isAprilFoolsMode)
 				{
 					normalGameOptionsV.GameMode = normalGameOptionsV.AprilFoolsOnMode;
@@ -128,7 +128,7 @@ namespace MoreGamemodes
 				normalGameOptionsV.AnonymousVotes = reader.ReadBoolean();
 				normalGameOptionsV.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)reader.ReadByte();
 				normalGameOptionsV.Tag = reader.ReadByte();
-				normalGameOptionsV.roleOptions.UpdateFrom(RoleOptionsCollectionV09.Deserialize(reader));
+				normalGameOptionsV.roleOptions.UpdateFrom(RoleOptionsCollectionV10.Deserialize(reader));
                 if (reader.BytesRemaining > 0 && reader.ReadBoolean())
                     normalGameOptionsV.MapId = 3;
 				__result = normalGameOptionsV;
@@ -143,10 +143,10 @@ namespace MoreGamemodes
         }
     }
 
-    [HarmonyPatch(typeof(HideNSeekGameOptionsV09), nameof(HideNSeekGameOptionsV09.Serialize))]
-    class HideNSeekGameOptionsV09SerializePatch
+    [HarmonyPatch(typeof(HideNSeekGameOptionsV10), nameof(HideNSeekGameOptionsV10.Serialize))]
+    class HideNSeekGameOptionsV10SerializePatch
     {
-        public static bool Prefix([HarmonyArgument(0)] MessageWriter writer, [HarmonyArgument(1)] HideNSeekGameOptionsV09 gameOptions)
+        public static bool Prefix([HarmonyArgument(0)] MessageWriter writer, [HarmonyArgument(1)] HideNSeekGameOptionsV10 gameOptions)
         {
             if (!AmongUsClient.Instance.AmHost) return true;
             writer.Write((byte)gameOptions.SpecialMode);
@@ -180,14 +180,14 @@ namespace MoreGamemodes
         }
     }
 
-    [HarmonyPatch(typeof(HideNSeekGameOptionsV09), nameof(HideNSeekGameOptionsV09.Deserialize))]
-    class HideNSeekGameOptionsV09DeserializePatch
+    [HarmonyPatch(typeof(HideNSeekGameOptionsV10), nameof(HideNSeekGameOptionsV10.Deserialize))]
+    class HideNSeekGameOptionsV10DeserializePatch
     {
-        public static bool Prefix([HarmonyArgument(0)] MessageReader reader, [HarmonyArgument(1)] bool isAprilFoolsMode, [HarmonyArgument(2)] ILogger logger, ref HideNSeekGameOptionsV09 __result)
+        public static bool Prefix([HarmonyArgument(0)] MessageReader reader, [HarmonyArgument(1)] bool isAprilFoolsMode, [HarmonyArgument(2)] ILogger logger, ref HideNSeekGameOptionsV10 __result)
         {
             try
 			{
-				HideNSeekGameOptionsV09 hideNSeekGameOptionsV = new(logger);
+				HideNSeekGameOptionsV10 hideNSeekGameOptionsV = new(logger);
 				if (isAprilFoolsMode)
 				{
 					hideNSeekGameOptionsV.GameMode = hideNSeekGameOptionsV.AprilFoolsOnMode;

@@ -41,6 +41,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -78,6 +80,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -112,6 +116,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.Data.RpcSetTasks(new byte[0]);
                 Player.SyncPlayerSettings();
@@ -194,7 +200,7 @@ namespace MoreGamemodes
                 BaseRole = BaseRoles.DesyncImpostor;
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom && !pc.Data.IsDead)
+                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Crewmate, Player);
                 }
                 Player.RpcSetDesyncRole(RoleTypes.Impostor, Player);
@@ -265,7 +271,7 @@ namespace MoreGamemodes
             DouseIgniteCooldown = FloatOptionItem.Create(1000302, "Douse/Ignite cooldown", new(2.5f, 60f, 2.5f), 12.5f, TabGroup.NeutralRoles, false)
                 .SetParent(Chance)
                 .SetValueFormat(OptionFormat.Seconds);
-            IgniteDuration = FloatOptionItem.Create(1000303, "Ignite duration", new(1f, 30f, 0.5f), 10f, TabGroup.NeutralRoles, false)
+            IgniteDuration = FloatOptionItem.Create(1000303, "Ignite duration", new(1f, 30f, 0.5f), 5f, TabGroup.NeutralRoles, false)
                 .SetParent(Chance)
                 .SetValueFormat(OptionFormat.Seconds);
             IgniteRadius = FloatOptionItem.Create(1000304, "Ignite radius", new(0.5f, 2.5f, 0.1f), 1f, TabGroup.NeutralRoles, false)

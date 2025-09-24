@@ -9,13 +9,6 @@ namespace MoreGamemodes
 {
     public class BombTagGamemode : CustomGamemode
     {
-        public override void OnExile(NetworkedPlayerInfo exiled)
-        {
-            Main.Timer = 0f;
-            foreach (var pc in PlayerControl.AllPlayerControls)
-                pc.RpcResetAbilityCooldown();
-        }
-
         public override void OnSetFilterText(HauntMenuMinigame __instance)
         {
             if (__instance.HauntTarget.Data.IsDead)
@@ -189,7 +182,6 @@ namespace MoreGamemodes
                         Utils.RpcCreateExplosion(3f, 1f, Options.BtExplosionCreatesHole.GetBool(), Options.BtHoleSpeedDecrease.GetInt(), pc.transform.position);
                     }
                 }
-                Main.Timer = 0f;
             }
             bool bombedExists = false;
             foreach (var pc in PlayerControl.AllPlayerControls)
@@ -231,6 +223,7 @@ namespace MoreGamemodes
                             pc.RpcRandomVentTeleport();
                     }
                 }
+                Main.Timer = 0f;
             }
         }
 
@@ -260,6 +253,8 @@ namespace MoreGamemodes
             opt.RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
             opt.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Viper, 0, 0);
             opt.SetFloat(FloatOptionNames.KillCooldown, 0.001f);
             opt.SetFloat(FloatOptionNames.ShapeshifterCooldown, Options.ExplosionDelay.GetInt() + 0.1f);
             opt.SetInt(Int32OptionNames.TaskBarMode, (int)TaskBarMode.Invisible);

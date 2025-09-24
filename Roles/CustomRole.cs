@@ -79,6 +79,11 @@ namespace MoreGamemodes
             return true;
         }
 
+        public virtual void OnCheckShapeshiftMeeting(PlayerControl target)
+        {
+
+        }
+
         public virtual void OnShapeshift(PlayerControl target)
         {
 
@@ -101,7 +106,7 @@ namespace MoreGamemodes
 
         public virtual bool OnEnterVent(int id)
         {
-            return BaseRole is BaseRoles.Engineer or BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter  or BaseRoles.DesyncPhantom;
+            return BaseRole is BaseRoles.Engineer or BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper or BaseRoles.DesyncImpostor or BaseRoles.DesyncShapeshifter  or BaseRoles.DesyncPhantom or BaseRoles.DesyncViper;
         }
 
         public virtual void OnCompleteTask()
@@ -222,9 +227,11 @@ namespace MoreGamemodes
             return BaseRole is BaseRoles.Impostor or
             BaseRoles.Shapeshifter or
             BaseRoles.Phantom or
+            BaseRoles.Viper or
             BaseRoles.DesyncImpostor or
             BaseRoles.DesyncShapeshifter or
-            BaseRoles.DesyncPhantom;
+            BaseRoles.DesyncPhantom or
+            BaseRoles.DesyncViper;
         }
 
         public bool CanUseShiftButton()
@@ -243,7 +250,6 @@ namespace MoreGamemodes
             return IsNeutralKilling() ||
             Role is CustomRoles.Investigator or
             CustomRoles.Sniffer or
-            CustomRoles.Oracle or
             CustomRoles.Sheriff or
             CustomRoles.Medic;
         }
@@ -282,12 +288,33 @@ namespace MoreGamemodes
 
         public virtual bool CanGuess(PlayerControl target, CustomRoles role)
         {
-            return false;
+            if (!Options.EnableGuesserMode.GetBool()) return false;
+            if ((IsImpostor() && !Options.ImpostorsCanGuess.GetBool()) || (IsNeutralKilling() && !Options.NeutralKillingCanGuess.GetBool()) ||
+                (IsNeutralEvil() && !Options.NeutralEvilCanGuess.GetBool()) || (IsNeutralBenign() && !Options.NeutralBenignCanGuess.GetBool()) ||
+                (IsCrewmate() && !Options.CrewmatesCanGuess.GetBool()))
+            {
+                return false;
+            }
+            if (IsImpostor() && target.GetRole().IsImpostor()) return false; 
+            if (role == CustomRoles.Crewmate && !Options.CrewmateRoleCanBeGuessed.GetBool()) return false;
+            return (CustomRolesHelper.IsCrewmate(role) && !IsCrewmate()) || (CustomRolesHelper.IsImpostor(role) && !IsImpostor()) ||
+                (CustomRolesHelper.IsNeutralKilling(role) && Options.NeutralKillingCanBeGuessed.GetBool()) ||
+                (CustomRolesHelper.IsNeutralEvil(role) && Options.NeutralEvilCanBeGuessed.GetBool()) ||
+                (CustomRolesHelper.IsNeutralBenign(role) && Options.NeutralBenignCanBeGuessed.GetBool());
         }
 
         public virtual bool CanGuess(PlayerControl target, AddOns addOn)
         {
-            return false;
+            if (!Options.EnableGuesserMode.GetBool()) return false;
+            if ((IsImpostor() && !Options.ImpostorsCanGuess.GetBool()) || (IsNeutralKilling() && !Options.NeutralKillingCanGuess.GetBool()) ||
+                (IsNeutralEvil() && !Options.NeutralEvilCanGuess.GetBool()) || (IsNeutralBenign() && !Options.NeutralBenignCanGuess.GetBool()) ||
+                (IsCrewmate() && !Options.CrewmatesCanGuess.GetBool()))
+            {
+                return false;
+            }
+            if (target == Player || (IsImpostor() && target.GetRole().IsImpostor())) return false;
+            if (IsImpostor() && AddOnsHelper.IsImpostorOnly(addOn)) return false;
+            return Options.AddOnsCanBeGuessed.GetBool();
         }
 
         public virtual bool CanGetGuessed(PlayerControl guesser, CustomRoles? role)
@@ -333,6 +360,11 @@ namespace MoreGamemodes
         public virtual bool ShouldContinueGame()
         {
             return false;
+        }
+
+        public virtual void CreateMeetingButtons(MeetingHud __instance)
+        {
+
         }
 
         public virtual void ReceiveRPC(MessageReader reader)

@@ -59,6 +59,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -69,6 +71,13 @@ namespace MoreGamemodes
         {
             if (!Main.IsModded[Player.PlayerId] && Cooldown > 0f) return false;
             if (AbilityUses < 1f || SelectedPlayers.Contains(target.PlayerId)) return false;
+            int alivePlayers = 0;
+            foreach (var pc in PlayerControl.AllPlayerControls)
+            {
+                if (!pc.Data.IsDead)
+                    ++alivePlayers;
+            }
+            if (alivePlayers < MinimumPlayersAliveForAbilityUse.GetInt()) return false;
             SelectedPlayers.Add(target.PlayerId);
             if (SelectedPlayers.Count >= NumberOfSelectedPlayers.GetInt())
             {
@@ -93,7 +102,9 @@ namespace MoreGamemodes
                     message += ", " + Main.StandardNames[SelectedPlayers[i]];
                 message += "!\n" + Main.StandardNames[confessId] + " is the most evil!";
                 Player.Notify(message);
-                Main.NameColors[(confessId, Player.PlayerId)] = Palette.ImpostorRed;
+                foreach (var playerId in SelectedPlayers)
+                    Main.NameColors[(playerId, Player.PlayerId)] = Color.yellow;
+                Main.NameColors[(confessId, Player.PlayerId)] = Palette.Orange;
                 SelectedPlayers.Clear();
                 Player.RpcSetAbilityUses(AbilityUses - 1f);
                 Player.RpcSetKillTimer(ConfessCooldown.GetFloat());
@@ -115,6 +126,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -142,6 +155,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -287,6 +302,7 @@ namespace MoreGamemodes
         public static OptionItem ConfessCooldown;
         public static OptionItem NumberOfSelectedPlayers;
         public static OptionItem UnselectDeadPlayers;
+        public static OptionItem MinimumPlayersAliveForAbilityUse;
         public static OptionItem InitialAbilityUseLimit;
         public static OptionItem AbilityUseGainWithEachTaskCompleted;
         public static void SetupOptionItem()
@@ -301,9 +317,11 @@ namespace MoreGamemodes
                 .SetParent(Chance);
             UnselectDeadPlayers = BooleanOptionItem.Create(100504, "Unselect dead players", true, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
-            InitialAbilityUseLimit = FloatOptionItem.Create(100505, "Initial ability use limit", new(0f, 15f, 1f), 1f, TabGroup.CrewmateRoles, false)
+            MinimumPlayersAliveForAbilityUse = IntegerOptionItem.Create(100505, "Minimum players alive for ability use", new(2, 15, 1), 6, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
-            AbilityUseGainWithEachTaskCompleted = FloatOptionItem.Create(100506, "Ability use gain with each task completed", new(0f, 2f, 0.1f), 0.4f, TabGroup.CrewmateRoles, false)
+            InitialAbilityUseLimit = FloatOptionItem.Create(100506, "Initial ability use limit", new(0f, 15f, 1f), 1f, TabGroup.CrewmateRoles, false)
+                .SetParent(Chance);
+            AbilityUseGainWithEachTaskCompleted = FloatOptionItem.Create(100507, "Ability use gain with each task completed", new(0f, 2f, 0.1f), 0.4f, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             Options.RolesChance[CustomRoles.Oracle] = Chance;
             Options.RolesCount[CustomRoles.Oracle] = Count;

@@ -7,16 +7,6 @@ namespace MoreGamemodes
 {
     public class FreezeTagGamemode : CustomGamemode
     {
-        public override void OnExile(NetworkedPlayerInfo exiled)
-        {
-            Main.Timer = 0f;
-            foreach (var pc in PlayerControl.AllPlayerControls)
-            {
-                if (pc.Data.Role.IsImpostor)
-                    pc.SyncPlayerSettings();
-            }
-        }
-        
         public override void OnSetFilterText(HauntMenuMinigame __instance)
         {
             if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Crewmate)
@@ -35,6 +25,8 @@ namespace MoreGamemodes
                 __instance.FilterText.text = "Phantom";
             if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Tracker)
                 __instance.FilterText.text = "Tracker";
+            if (__instance.HauntTarget.Data.Role.Role == RoleTypes.Viper)
+                __instance.FilterText.text = "Viper";
         }
 
         public override void OnHudUpdate(HudManager __instance)
@@ -297,6 +289,7 @@ namespace MoreGamemodes
         {
             opt.SetInt(Int32OptionNames.NumEmergencyMeetings, 0);
             opt.SetFloat(FloatOptionNames.KillCooldown, 0.001f);
+            opt.RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
             if (Main.Timer < Options.FtImpostorsBlindTime.GetFloat() && player.Data.Role != null && player.Data.Role.IsImpostor)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);
@@ -367,7 +360,7 @@ namespace MoreGamemodes
             player.RpcSendNoisemakerAlert();
             foreach (var pc in PlayerControl.AllPlayerControls)
             {
-                if (pc.AmOwner || Main.IsModded[pc.PlayerId] || pc == player || (pc.Data.Role.IsImpostor && !GameManager.Instance.LogicOptions.GetNoisemakerImpostorAlert())) continue;
+                if (pc.AmOwner || Main.IsModded[pc.PlayerId] || pc == player || (pc.Data.Role.IsImpostor && !GameManager.Instance.LogicOptions.GetRoleBool(BoolOptionNames.NoisemakerImpostorAlert))) continue;
                 CustomRpcSender sender = CustomRpcSender.Create(SendOption.Reliable);
                 sender.StartMessage(pc.GetClientId());
                 sender.StartRpc(player.NetId, (byte)RpcCalls.MurderPlayer)

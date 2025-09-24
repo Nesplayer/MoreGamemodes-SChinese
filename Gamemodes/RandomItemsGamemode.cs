@@ -421,7 +421,7 @@ namespace MoreGamemodes
             if (CamouflageTimer > -1f)
             {
                 CamouflageTimer = -1f;
-                Utils.RevertCamouflage();
+                new LateTask(() => Utils.RevertCamouflage(), 0f);
             }
             if (Options.EnableMedicine.GetBool())
             {

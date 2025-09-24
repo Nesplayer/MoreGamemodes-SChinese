@@ -19,13 +19,13 @@ namespace MoreGamemodes
 
         public override void OnPet()
         {
-            if (Main.IsModded[Player.PlayerId]) return;
+            if (Player.AmOwner || Main.IsModded[Player.PlayerId]) return;
             if (BaseRole == BaseRoles.Crewmate)
             {
                 BaseRole = BaseRoles.DesyncImpostor;
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom && !pc.Data.IsDead)
+                    if (pc.GetRole().BaseRole is BaseRoles.Impostor or BaseRoles.Shapeshifter or BaseRoles.Phantom or BaseRoles.Viper && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Crewmate, Player);
                 }
                 Player.RpcSetDesyncRole(RoleTypes.Impostor, Player);
@@ -45,6 +45,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -53,7 +55,7 @@ namespace MoreGamemodes
 
         public override bool OnCheckMurder(PlayerControl target)
         {
-            if (!Main.IsModded[Player.PlayerId] && Cooldown > 0f) return false;
+            if (!Player.AmOwner && !Main.IsModded[Player.PlayerId] && Cooldown > 0f) return false;
             if (!CanKill(target))
             {
                 Player.RpcSetDeathReason(DeathReasons.Misfire);
@@ -81,6 +83,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -101,6 +105,8 @@ namespace MoreGamemodes
                         pc.RpcSetDesyncRole(RoleTypes.Shapeshifter, Player);
                     else if (pc.GetRole().BaseRole is BaseRoles.Phantom && !pc.Data.IsDead)
                         pc.RpcSetDesyncRole(RoleTypes.Phantom, Player);
+                    else if (pc.GetRole().BaseRole is BaseRoles.Viper && !pc.Data.IsDead)
+                        pc.RpcSetDesyncRole(RoleTypes.Viper, Player);
                 }
                 Player.SyncPlayerSettings();
                 Main.NameColors[(Player.PlayerId, Player.PlayerId)] = Color.clear;
@@ -135,7 +141,7 @@ namespace MoreGamemodes
 
         public override string GetNamePostfix()
         {
-            if (Main.IsModded[Player.PlayerId]) return "";
+            if (Player.AmOwner || Main.IsModded[Player.PlayerId]) return "";
             if (BaseRole == BaseRoles.Crewmate)
             {
                 return Utils.ColorString(Color, "\n<size=1.8>Mode: Task\n</size><size=65%>") + Utils.ColorString(Color.magenta, "(") +
@@ -157,7 +163,7 @@ namespace MoreGamemodes
 
         public override bool ShouldContinueGame()
         {
-            return true;
+            return ShouldContinueTheGame.GetBool();
         }
 
         public bool CanKill(PlayerControl target)
@@ -187,6 +193,7 @@ namespace MoreGamemodes
         public static OptionItem CanKillNeutralEvil;
         public static OptionItem CanKillNeutralBenign;
         public static OptionItem CanKillJester;
+        public static OptionItem ShouldContinueTheGame;
         public static void SetupOptionItem()
         {
             Chance = RoleOptionItem.Create(200100, CustomRoles.Sheriff, TabGroup.CrewmateRoles, false);
@@ -204,6 +211,8 @@ namespace MoreGamemodes
             CanKillNeutralBenign = BooleanOptionItem.Create(200106, "Can kill neutral benign", false, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             CanKillJester = BooleanOptionItem.Create(200107, "Can kill jester", false, TabGroup.CrewmateRoles, false)
+                .SetParent(Chance);
+            ShouldContinueTheGame = BooleanOptionItem.Create(200108, "Should continue the game", true, TabGroup.CrewmateRoles, false)
                 .SetParent(Chance);
             Options.RolesChance[CustomRoles.Sheriff] = Chance;
             Options.RolesCount[CustomRoles.Sheriff] = Count;

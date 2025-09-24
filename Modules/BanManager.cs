@@ -88,6 +88,7 @@ namespace MoreGamemodes
             "cat#2761",
             "tenpalace#1924",
             "giltgram#4461",
+            "yawnforty#7826",
         };
         public static readonly List<string> BannedHashedPuids = new(){
             "b0437b1e6",

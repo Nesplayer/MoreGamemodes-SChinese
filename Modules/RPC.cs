@@ -77,6 +77,18 @@ namespace MoreGamemodes
                     if (Options.DisableGapPlatform.GetBool()) return false;
                     if (!CustomGamemode.Instance.OnUsePlatform(__instance)) return false;
                     break;
+                case RpcCalls.CheckVanish:
+			        __instance.CheckVanish();
+			        return false;
+		        case RpcCalls.StartVanish:
+			        __instance.HandleServerVanish();
+			        return false;
+		        case RpcCalls.CheckAppear:
+			        __instance.CheckAppear(reader.ReadBoolean());
+			        return false;
+		        case RpcCalls.StartAppear:
+			        __instance.HandleServerAppear(reader.ReadBoolean());
+			        return false;
             }
             return true;
         }
@@ -187,8 +199,10 @@ namespace MoreGamemodes
             switch (rpcType)
             {
                 case CustomRPC.SyncCustomOptions:
-                    foreach (var co in OptionItem.AllOptions)
+                    for (int i = reader.ReadInt32(); i < OptionItem.AllOptions.Count; ++i)
                     {
+                        if (reader.BytesRemaining == 0) break;
+                        var co = OptionItem.AllOptions[i];
                         if (co is TextOptionItem) continue;
                         if (co.Id == 0)
                         {
@@ -496,10 +510,18 @@ namespace MoreGamemodes
         {
             if (!AmongUsClient.Instance.AmHost) return;
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(manager.NetId, (byte)CustomRPC.SyncCustomOptions, SendOption.Reliable, -1);
-            foreach (var co in OptionItem.AllOptions)
+            writer.Write(0);
+            for (int i = 0; i < OptionItem.AllOptions.Count; ++i)
             {
+                var co = OptionItem.AllOptions[i];
                 if (co.Id == 0 || co is TextOptionItem) continue;
                 if (co.Id >= 1000 && co.IsHiddenOn(Options.CurrentGamemode)) continue;
+                if (writer.Length > 500)
+                {
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    writer = AmongUsClient.Instance.StartRpcImmediately(manager.NetId, (byte)CustomRPC.SyncCustomOptions, SendOption.Reliable, -1);
+                    writer.Write(i);
+                }
                 writer.Write(co.CurrentValue);
             }
             AmongUsClient.Instance.FinishRpcImmediately(writer);

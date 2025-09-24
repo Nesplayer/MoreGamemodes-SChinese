@@ -40,7 +40,9 @@ namespace MoreGamemodes
         public static OptionItem Count;
         public static OptionItem ReportDelay;
         public static OptionItem WarnKillerAboutSelfReport;
-        public static OptionItem NeutralsCanBecomeBait;
+        public static OptionItem BenignNeutralsCanBecomeBait;
+        public static OptionItem EvilNeutralsCanBecomeBait;
+        public static OptionItem KillingNeutralsCanBecomeBait;
         public static OptionItem ImpostorsCanBecomeBait;
         public static OptionItem CanBeGuessed;
         public static void SetupOptionItem()
@@ -53,11 +55,15 @@ namespace MoreGamemodes
                 .SetValueFormat(OptionFormat.Seconds);
             WarnKillerAboutSelfReport = BooleanOptionItem.Create(1100103, "Warn killer about self report", false, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            NeutralsCanBecomeBait = BooleanOptionItem.Create(1100104, "Neutrals can become bait", true, TabGroup.AddOns, false)
+            BenignNeutralsCanBecomeBait = BooleanOptionItem.Create(1100104, "Benign neutrals can become bait", true, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            ImpostorsCanBecomeBait = BooleanOptionItem.Create(1100105, "Impostors can become bait", true, TabGroup.AddOns, false)
+            EvilNeutralsCanBecomeBait = BooleanOptionItem.Create(1100105, "Evil neutrals can become bait", true, TabGroup.AddOns, false)
                 .SetParent(Chance);
-            CanBeGuessed = BooleanOptionItem.Create(1100106, "Can be guessed", true, TabGroup.AddOns, false)
+            KillingNeutralsCanBecomeBait = BooleanOptionItem.Create(1100106, "Killing neutrals can become bait", true, TabGroup.AddOns, false)
+                .SetParent(Chance);
+            ImpostorsCanBecomeBait = BooleanOptionItem.Create(1100107, "Impostors can become bait", true, TabGroup.AddOns, false)
+                .SetParent(Chance);
+            CanBeGuessed = BooleanOptionItem.Create(1100108, "Can be guessed", true, TabGroup.AddOns, false)
                 .SetParent(Chance);
             Options.AddOnsChance[AddOns.Bait] = Chance;
             Options.AddOnsCount[AddOns.Bait] = Count;
