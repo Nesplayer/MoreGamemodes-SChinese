@@ -706,6 +706,7 @@ You can use pet button to switch between task and shield mode. In task mode you 
 | Shield cooldown         |
 | Reset kill cooldown     |
 | Shielded can see shield |
+| See kill attempt alert  |
 
 ### Crewmate support
 
