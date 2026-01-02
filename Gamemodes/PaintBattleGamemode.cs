@@ -22,7 +22,7 @@ namespace MoreGamemodes
             if (IsPaintActive)
             {
                 __instance.AbilityButton.ToggleVisible(true);
-                __instance.AbilityButton.OverrideText("Paint");
+                __instance.AbilityButton.OverrideText("绘画");
             }
             else
             {
@@ -33,13 +33,13 @@ namespace MoreGamemodes
 
         public override void OnSetFilterText(HauntMenuMinigame __instance)
         {
-            __instance.FilterText.text = "Player";
+            __instance.FilterText.text = "玩家";
         }
 
         public override void OnSetTaskText(TaskPanelBehaviour __instance, string str)
         {
             var player = PlayerControl.LocalPlayer;
-            __instance.taskText.text = Utils.ColorString(Color.gray, "Painter:\nPaint something in theme.\nThe theme is " + Theme + ".");
+            __instance.taskText.text = Utils.ColorString(Color.gray, "画家：\n画出关于主题的内容\n主题是" + Theme);
         }
 
         public override void OnShowNormalMap(MapBehaviour __instance)
@@ -54,7 +54,7 @@ namespace MoreGamemodes
 
         public override void OnBeginImpostorPostfix(IntroCutscene __instance)
         {
-            __instance.TeamTitle.text = "Painter";
+            __instance.TeamTitle.text = "画家";
             __instance.TeamTitle.color = Color.gray;
             __instance.BackgroundBar.material.color = Color.gray;
             __instance.ImpostorText.text = "";
@@ -62,9 +62,9 @@ namespace MoreGamemodes
 
         public override void OnShowRole(IntroCutscene __instance)
         {
-            __instance.RoleText.text = "Painter";
+            __instance.RoleText.text = "画家";
             __instance.RoleText.color = Color.gray;
-            __instance.RoleBlurbText.text = "Paint something in theme.";
+            __instance.RoleBlurbText.text = "画出关于主题的内容";
             __instance.RoleBlurbText.color = Color.gray;
             __instance.YouAreText.color = Color.gray;
         }
@@ -84,7 +84,7 @@ namespace MoreGamemodes
             var rand = new System.Random();
             Theme = Main.PaintBattleThemes[rand.Next(0, Main.PaintBattleThemes.Count)];
             SendRPC(GameManager.Instance);
-            Utils.SendChat("Start painting! The theme is " + Theme + "! Remember to evalute less paintings that are not in theme!", "Theme");
+            Utils.SendChat("开始绘画！主题是" + Theme + "。记得不符合主题的画不要给太高分", "主题");
             new LateTask(() => Utils.RpcSetUnshiftButton(), 0.5f);
         }
 
@@ -129,7 +129,7 @@ namespace MoreGamemodes
                 if (VotingPlayerId == 0 && PaintBattleVotingTime == 0f)
                 {
                     PaintBattleVotingTime = Options.VotingTime.GetInt();
-                    Utils.SendChat("Rate " + Main.StandardNames[VotingPlayerId] + "'s paint by typing 1-10 in chat!", "Voting");
+                    Utils.SendChat("评分" + Main.StandardNames[VotingPlayerId] + "的画作可以透过在聊天里输入1-10来给予不同分数", "投票");
                     foreach (var pc in PlayerControl.AllPlayerControls)
                         HasVoted[pc.PlayerId] = false;
                 }
@@ -154,7 +154,7 @@ namespace MoreGamemodes
                             break;
                         }
                     }
-                    Utils.SendChat("Rate " + Main.StandardNames[VotingPlayerId] + "'s paint by typing 1-10 in chat!", "Voting");
+                    Utils.SendChat("评分" + Main.StandardNames[VotingPlayerId] + "的画作可以透过在聊天里输入1-10来给予不同分数", "投票");
                     foreach (var pc in PlayerControl.AllPlayerControls)
                         HasVoted[pc.PlayerId] = false;
                 }
@@ -194,9 +194,9 @@ namespace MoreGamemodes
         public override string BuildPlayerName(PlayerControl player, PlayerControl seer, string name)
         {
             if (player == seer && IsPaintActive)
-                name = Utils.ColorString(Color.cyan, "<font=\"VCR SDF\"><size=10>REMAINING TIME: " + (int)(PaintTime + 0.99f) + "s</size><size=15>\n\n</size></font>") + name + "<font=\"VCR SDF\"><size=25>\n\n<size=0>.";
+                name = Utils.ColorString(Color.cyan, "<font=\"VCR SDF\"><size=10>剩余时间：" + (int)(PaintTime + 0.99f) + "s</size><size=15>\n\n</size></font>") + name + "<font=\"VCR SDF\"><size=25>\n\n<size=0>.";
             if (player == seer && !IsPaintActive)
-                name = Utils.ColorString(Color.magenta, "<font=\"VCR SDF\"><size=8>Rate " + Main.StandardNames[VotingPlayerId] + "'s painting!</size><size=17>\n\n</size></font>") + name + "<font=\"VCR SDF\"><size=25>\n\n<size=0>.";
+                name = Utils.ColorString(Color.magenta, "<font=\"VCR SDF\"><size=8>评分" + Main.StandardNames[VotingPlayerId] + "的画作</size><size=17>\n\n</size></font>") + name + "<font=\"VCR SDF\"><size=25>\n\n<size=0>.";
             return name;
         }
 
