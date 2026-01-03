@@ -785,13 +785,13 @@ namespace MoreGamemodes
                 .SetGamemode(Gamemodes.Speedrun);
 
             //Paint battle
-            PaintBattle = TextOptionItem.Create(9000, "Paint battle", TabGroup.GamemodeSettings)
+            PaintBattle = TextOptionItem.Create(9000, "绘画战争", TabGroup.GamemodeSettings)
                 .SetGamemode(Gamemodes.PaintBattle)
                 .SetColor(Color.gray);
-            PaintingTime = IntegerOptionItem.Create(9001, "Painting time", new(30, 900, 10), 180, TabGroup.GamemodeSettings, false)
+            PaintingTime = IntegerOptionItem.Create(9001, "绘画时间", new(30, 900, 10), 180, TabGroup.GamemodeSettings, false)
                 .SetGamemode(Gamemodes.PaintBattle)
                 .SetValueFormat(OptionFormat.Seconds);
-            VotingTime = IntegerOptionItem.Create(9002, "Voting time", new(5, 30, 1), 10, TabGroup.GamemodeSettings, false)
+            VotingTime = IntegerOptionItem.Create(9002, "评分时间", new(5, 30, 1), 10, TabGroup.GamemodeSettings, false)
                 .SetGamemode(Gamemodes.PaintBattle)
                 .SetValueFormat(OptionFormat.Seconds);
             
