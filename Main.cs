@@ -122,9 +122,9 @@ namespace MoreGamemodes
             AllPlayersDeathReason = new Dictionary<byte, DeathReasons>();
             PaintBattleThemes = new List<string>()
             {
-                "Crewmate", "Impostor", "Dead body", "Cosmos", "House", "Beach", "Sky", "Love", "Jungle", "Robot", "Fruits", "Vegetables", "Lake",
-                "Rainbow", "Portal", "Planet", "Desert", "Taiga", "Airplane", "Cave", "Island", "Animal", "Anything", "Flag", "Jewellery", "Scary",
-                "Shapeshifter", "Sword", "Treasure", "Your dream", "Celebrity", "Fungus", "City", "Spaceship", "Toilet", "Tree", "Abstraction"
+                "船员", "伪装者", "尸体", "宇宙", "马", "沙滩", "天空", "爱情", "丛林", "机器人", "水果", "蔬菜", "湖泊",
+                "彩虹", "门户", "行星", "沙漠", "针叶树林地带", "飞机", "洞穴", "岛屿", "动物", "任何东西", "旗帜", "珠宝", "吓人的",
+                "变形者", "剑", "宝藏", "你的梦想", "名人", "真菌", "城市", "宇宙飞船", "厕所", "树木", "抽象的"
             };
             MessagesToSend = new List<(string, byte, string)>();
             LastResult = "";

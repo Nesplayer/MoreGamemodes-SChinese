@@ -34,7 +34,7 @@ namespace MoreGamemodes
 
         public static readonly string[] gameModes =
         {
-            "Classic", "Hide And Seek", "Shift And Seek", "Bomb Tag", "Random Items", "Battle Royale", "Speedrun", "Paint Battle", "Kill Or Die", "Zombies", "Jailbreak", "Deathrun", "Base Wars", "Freeze Tag", "Color Wars"
+            "Classic", "Hide And Seek", "Shift And Seek", "Bomb Tag", "Random Items", "Battle Royale", "Speedrun", "绘画战争", "Kill Or Die", "Zombies", "Jailbreak", "Deathrun", "Base Wars", "Freeze Tag", "Color Wars"
         };
 
         public static readonly string[] speedrunBodyTypes =
